@@ -38,6 +38,12 @@ public class Maze extends SimpleApplication {
         mz.renderObject(new Vector3f(1, 0, 0),
                         rootNode,
                         assetManager);
+
+        OpenEntity oz = new OpenEntity(1, 1);
+        oz.renderObject(new Vector3f(0, 0, WallEntity.WALL_LENGTH),
+                        rootNode,
+                        assetManager);
+
     }
 
     @Override

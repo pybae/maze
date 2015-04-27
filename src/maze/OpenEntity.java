@@ -15,12 +15,11 @@ import com.jme3.scene.shape.Box;
 public class OpenEntity implements MazeEntity {
     private float width;
     private float length;
-    private float height;
+    public static final float WALL_HEIGHT = 0.1f;
 
-    public OpenEntity(float w, float l, float h) {
+    public OpenEntity(float w, float l) {
         width = w;
         length = l;
-        height = h;
     }
 
     public float getWidth() {
@@ -32,7 +31,7 @@ public class OpenEntity implements MazeEntity {
     }
 
     public float getHeight() {
-        return height;
+        return WALL_HEIGHT;
     }
 
     public void renderObject(Vector3f loc, Node rootNode,
@@ -42,15 +41,15 @@ public class OpenEntity implements MazeEntity {
          * http://javadoc.jmonkeyengine.org/com/jme3/scene/shape/Box.html#Box(float, float, float)
          */
 
-        Box b = new Box(width/2, length/2, height/2);
+        Box b = new Box(width/2, WALL_HEIGHT/2, length/2);
         Geometry box = new Geometry("Box", b);
         box.setLocalTranslation(new Vector3f(loc.x + width / 2,
-                                             loc.y + length / 2,
-                                             loc.z + height / 2));
+                                             loc.y + WALL_HEIGHT / 2,
+                                             loc.z + length / 2));
 
         Material mat = new Material(assetManager,
                                     "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Blue);
+        mat.setColor("Color", ColorRGBA.Red);
         box.setMaterial(mat);
 
         rootNode.attachChild(box);
