@@ -28,18 +28,16 @@ public class Maze extends SimpleApplication {
          * The maze itself should be a 2D array of MazeEntities
          * we can initialize which coordinates to pass into the entities
          */
-        MazeEntity mz = new OpenEntity(1, 1, 1);
+        MazeEntity mz = new WallEntity(1, 1);
         mz.renderObject(new Vector3f(0, 0, 0),
                         rootNode,
                         assetManager);
-        MazeEntity mz2 = new OpenEntity(1, 1, 1);
-        mz2.renderObject(new Vector3f(1, 0, 0),
-                         rootNode,
-                         assetManager);
-        MazeEntity mz3 = new OpenEntity(1, 1, 1);
-        mz3.renderObject(new Vector3f(1, 1, 0),
-                         rootNode,
-                         assetManager);
+        mz.renderObject(new Vector3f(0, 1, 0),
+                        rootNode,
+                        assetManager);
+        mz.renderObject(new Vector3f(1, 0, 0),
+                        rootNode,
+                        assetManager);
     }
 
     @Override
