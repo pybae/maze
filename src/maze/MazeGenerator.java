@@ -33,10 +33,44 @@ public class MazeGenerator {
     // Using the width, height, and windiness of the passages, this method will
     //  return a MazeLayout object corresponding to the generated maze
     public MazeLayout generate() {
+        if(width % 2 == 0 || height % 2 == 0) {
+            return null;
+        }
+
+        MazeLayout layout = new MazeLayout(width, height);
         rooms = new ArrayList<Rectangle>();
         regions = new int[height][width];
 
-        return new MazeLayout(width, height);
+        defineWalls(layout);
+
+        addRooms(layout);
+
+        for(int r = 1; r < height; r += 2) {
+            for(int c = 1; c < width; c += 2) {
+                if(layout.getState(r, c) == State.NOT_SET) {
+                    growMaze(layout, r, c);
+                }
+            }
+        }
+
+        connectRegions(layout);
+
+        return layout;
+    }
+
+    // Define the perimeter as walls
+    private void defineWalls(MazeLayout m) {
+        // Set left and right
+        for(int r = 0; r < height; r++) {
+            m.setState(r, 0, State.WALL);
+            m.setState(r, width - 1, State.WALL);
+        }
+
+        // Set top and bottom
+        for(int c = 1; c < width; c++) {
+            m.setState(0, c, State.WALL);
+            m.setState(height - 1, c, State.WALL);
+        }
     }
 
     // Place rooms in the maze
@@ -58,5 +92,5 @@ public class MazeGenerator {
     }
 
     // Set the state at the specified location
-    private void carve(int r, int c, MazeLayout.State s) {}
+    private void carve(int r, int c, State s) {}
 }

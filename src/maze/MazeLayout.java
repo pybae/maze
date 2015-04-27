@@ -1,8 +1,6 @@
 import java.util.*;
 
 public class MazeLayout {
-    public enum State { NOT_SET, WALL, PATH }
-
     private State[][] maze;
 
     public MazeLayout(int w, int h) {

@@ -1,0 +1,5 @@
+public enum State {
+    NOT_SET,
+    WALL,
+    PATH
+}
