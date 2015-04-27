@@ -1,32 +1,38 @@
 package maze;
 
+import com.jme3.asset.AssetManager;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
+
 /**
  * represents empty space in a maze, such as those in the boundaries
  * note that this is different from OpenEntity, which represents an open path
  * available to the user to walk on
  */
 public class EmptyEntity implements MazeEntity {
-    private int width;
-    private int length;
-    private int height;
+    private float width;
+    private float length;
+    private float height;
 
-    public EmptyEntity(int w, int l, int h) {
+    public EmptyEntity(float w, float l, float h) {
         width = w;
         length = l;
         height = h;
     }
 
-    public int getWidth() {
+    public float getWidth() {
         return width;
     }
 
-    public int getLength() {
+    public float getLength() {
         return length;
     }
 
-    public int getHeight() {
+    public float getHeight() {
         return height;
     }
 
-    public void renderObject(int x, int y, int z) {}
+    public void renderObject(Vector3f loc, Node rootNode,
+                             AssetManager assetManager) {
+    }
 }
