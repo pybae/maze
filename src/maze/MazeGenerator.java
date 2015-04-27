@@ -1,8 +1,12 @@
+package maze;
+
 import java.util.ArrayList;
+import java.util.Random;
 import java.awt.Rectangle;
 
 public class MazeGenerator {
     public enum Direction { UP, DOWN, LEFT, RIGHT }
+    private final int MAX_ADD_ROOMS_TRIES = 10;
 
     private int width;
     private int height;
@@ -40,6 +44,7 @@ public class MazeGenerator {
         MazeLayout layout = new MazeLayout(width, height);
         rooms = new ArrayList<Rectangle>();
         regions = new int[height][width];
+        currentRegion = -1;
 
         defineWalls(layout);
 
@@ -74,7 +79,55 @@ public class MazeGenerator {
     }
 
     // Place rooms in the maze
-    private void addRooms(MazeLayout m) {}
+    private void addRooms(MazeLayout m) {
+        for(int i = 0; i < MAX_ADD_ROOMS_TRIES; i++) {
+            rooms.clear();
+
+            for(int j = 0; j < roomTries; j++) {
+                Random rand = new Random();
+
+                int size = (rand.nextInt(maxRoomSize - minRoomSize + 1) + minRoomSize) * 2 + 1;
+                int rectangularity = rand.nextInt(1 + size / 2) * 2;
+                int roomWidth = size;
+                int roomHeight = size;
+
+                if(rand.nextInt(2) % 2 == 0) {
+                    roomWidth += rectangularity;
+                } else {
+                    roomHeight += rectangularity;
+                }
+
+                int x = rand.nextInt((width - roomWidth) / 2) * 2 + 1;
+                int y = rand.nextInt((height - roomHeight) / 2) * 2 + 1;
+
+                Rectangle room = new Rectangle(x, y, roomWidth, roomHeight);
+
+                boolean overlaps = false;
+                for(Rectangle other : rooms) {
+                    if(room.intersects(other)) {
+                        overlaps = true;
+                        break;
+                    }
+                }
+
+                if(overlaps) continue;
+
+                rooms.add(room);
+
+                startRegion();
+
+                for(int r = y; r < y + roomHeight; r++) {
+                    for(int c = x; c < x + roomWidth; c++) {
+                        carve(m, r, c, State.OPEN);
+                    }
+                }
+            }
+
+            if(rooms.size() >= minRooms) {
+                break;
+            }
+        }
+    }
     
     // Implements "growing tree" algorithm to build the maze
     private void growMaze(MazeLayout m, int r, int c) {}
@@ -82,15 +135,23 @@ public class MazeGenerator {
     // Ensure that all regions are connected
     private void connectRegions(MazeLayout m) {}
 
+    // Move on to the next region
+    private void startRegion() {
+        currentRegion++;
+    }
+
     // Adds a junction at a specified location
-    private void addJunction(int r, int c) {}
+    private void addJunction(MazeLayout m, int r, int c) {}
 
     // Determines whether an opening can be carved from the cell at the
     //  specified location to the adjacent cell facing the specified direction
-    private boolean canCarve(int r, int c, Direction d) {
+    private boolean canCarve(MazeLayout m, int r, int c, Direction d) {
         return false;
     }
 
     // Set the state at the specified location
-    private void carve(int r, int c, State s) {}
+    private void carve(MazeLayout m, int r, int c, State s) {
+        m.setState(r, c, s);
+        regions[r][c] = currentRegion;
+    }
 }

@@ -1,3 +1,5 @@
+package maze;
+
 import java.util.*;
 
 public class MazeLayout {
@@ -6,9 +8,9 @@ public class MazeLayout {
     public MazeLayout(int w, int h) {
         maze = new State[h][w];
 
-        for(int i = 0; i < h; i++) {
-            for(int j = 0; j < w; j++) {
-                maze[i][j] = State.NOT_SET;
+        for(int r = 0; r < h; r++) {
+            for(int c = 0; c < w; c++) {
+                maze[r][c] = State.NOT_SET;
             }
         }
     }
@@ -19,5 +21,20 @@ public class MazeLayout {
 
     public void setState(int r, int c, State s) {
         maze[r][c] = s;
+    }
+
+    public void print() {
+        for(int r = 0; r < maze.length; r++) {
+            for(int c = 0; c < maze[0].length; c++) {
+                if(maze[r][c] == State.WALL) {
+                    System.out.print("* ");
+                } else if(maze[r][c] == State.NOT_SET) {
+                    System.out.print("- ");
+                } else {
+                    System.out.print("  ");
+                }
+            }
+            System.out.println();
+        }
     }
 }

@@ -1,5 +1,7 @@
+package maze;
+
 public enum State {
     NOT_SET,
     WALL,
-    PATH
+    OPEN
 }
