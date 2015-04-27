@@ -67,14 +67,14 @@ public class MazeGenerator {
     private void defineWalls(MazeLayout m) {
         // Set left and right
         for(int r = 0; r < height; r++) {
-            m.setState(r, 0, State.WALL);
-            m.setState(r, width - 1, State.WALL);
+            carve(m, r, 0, State.WALL);
+            carve(m, r, width - 1, State.WALL);
         }
 
         // Set top and bottom
         for(int c = 1; c < width; c++) {
-            m.setState(0, c, State.WALL);
-            m.setState(height - 1, c, State.WALL);
+            carve(m, 0, c, State.WALL);
+            carve(m, height - 1, c, State.WALL);
         }
     }
 
@@ -120,6 +120,16 @@ public class MazeGenerator {
                     for(int c = x; c < x + roomWidth; c++) {
                         carve(m, r, c, State.OPEN);
                     }
+                }
+
+                // encircle the room with walls
+                for(int r = y - 1; r < y + roomHeight + 1; r++) {
+                    carve(m, r, x - 1, State.WALL);
+                    carve(m, r, x + roomWidth, State.WALL);
+                }
+                for(int c = x - 1; c < x + roomWidth + 1; c++) {
+                    carve(m, y - 1, c, State.WALL);
+                    carve(m, y + roomHeight, c, State.WALL);
                 }
             }
 
