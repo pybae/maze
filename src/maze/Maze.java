@@ -3,7 +3,9 @@ package maze;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -16,9 +18,8 @@ import com.jme3.scene.Node;
 public class Maze extends SimpleApplication implements ActionListener {
 
     private BulletAppState bulletAppState;
-    private Node player;
-    private BetterCharacterControl playerController;
-    private boolean left,right,up,down;
+    private PhysicsCharacter player;
+    private boolean left, right, up, down;
     private Vector3f walkDirection = new Vector3f(0, 0, 0);
 
 
@@ -105,23 +106,23 @@ public class Maze extends SimpleApplication implements ActionListener {
         // uncomment this line and one cannot "fly" anymore
         // walkDirection.setY(0.0f);
 
-        playerController.setWalkDirection(walkDirection);
-        cam.setLocation(player.getLocalTranslation());
+        player.setWalkDirection(walkDirection);
+        cam.setLocation(player.getPhysicsLocation());
     }
 
     private void initPlayer() {
-        player = new Node("Character Node");
-        // starting position
-        player.setLocalTranslation(new Vector3f(0, 10.0f, 0));
 
-        // mess around with the constructor parameters here:
-        // http://javadoc.jmonkeyengine.org/com/jme3/bullet/control/BetterCharacterControl.html
-        // collision faults are mainly due to this
-        playerController = new BetterCharacterControl(0.3f, 2.5f, 8f);
-        player.addControl(playerController);
-        getPhysicsSpace().add(playerController);
+        flyCam.setMoveSpeed(2);
+        cam.setFrustumFar(2000);
 
-        rootNode.attachChild(player);
+        player = new PhysicsCharacter(new SphereCollisionShape(1.0f), 0);
+
+        player.setJumpSpeed(20);
+        player.setFallSpeed(30);
+        player.setGravity(0);
+        player.setPhysicsLocation(new Vector3f(0, 0, 0));
+
+        getPhysicsSpace().add(player);
     }
 
     private void initLight() {

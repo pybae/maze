@@ -59,10 +59,8 @@ public class OpenEntity implements MazeEntity {
 
         rootNode.attachChild(box);
 
-        CollisionShape sceneShape = CollisionShapeFactory.createBoxShape(box);
-        RigidBodyControl landscape = new RigidBodyControl(sceneShape, 0);
-
-        box.addControl(landscape);
-        physicsSpace.add(landscape);
+        // make the object static
+        box.addControl(new RigidBodyControl(0));
+        physicsSpace.addAll(box);
     }
 }

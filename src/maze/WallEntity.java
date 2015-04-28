@@ -1,18 +1,15 @@
 package maze;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 
 /**
@@ -64,10 +61,8 @@ public class WallEntity extends Maze implements MazeEntity {
 
         rootNode.attachChild(box);
 
-        CollisionShape sceneShape = CollisionShapeFactory.createBoxShape(box);
-        RigidBodyControl landscape = new RigidBodyControl(sceneShape, 0);
-
-        box.addControl(landscape);
-        physicsSpace.add(landscape);
+        // make the object static
+        box.addControl(new RigidBodyControl(0));
+        physicsSpace.addAll(box);
     }
 }
