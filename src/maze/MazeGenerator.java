@@ -1,7 +1,6 @@
 package maze;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 import java.awt.Rectangle;
 
 public class MazeGenerator {
@@ -50,8 +49,8 @@ public class MazeGenerator {
 
         addRooms(layout);
 
-        for(int r = 1; r < height; r += 2) {
-            for(int c = 1; c < width; c += 2) {
+        for(int r = 1; r < height - 1; r += 2) {
+            for(int c = 1; c < width - 1; c += 2) {
                 if(layout.getState(r, c) == State.NOT_SET) {
                     growMaze(layout, new Position(r, c));
                 }
@@ -59,6 +58,8 @@ public class MazeGenerator {
         }
 
         connectRegions(layout);
+
+        setAll(layout);
 
         return layout;
     }
@@ -75,6 +76,16 @@ public class MazeGenerator {
         for(int c = 1; c < width; c++) {
             carve(m, new Position(0, c), State.WALL);
             carve(m, new Position(height - 1, c), State.WALL);
+        }
+    }
+
+    private void setAll(MazeLayout m) {
+        for(int r = 1; r < height - 1; r++) {
+            for(int c = 1; c < width - 1; c++) {
+                if(m.getState(r, c) == State.NOT_SET) {
+                    carve(m, new Position(r, c), State.WALL);
+                }
+            }
         }
     }
 
@@ -203,7 +214,11 @@ public class MazeGenerator {
     }
 
     // Ensure that all regions are connected
-    private void connectRegions(MazeLayout m) {}
+    private void connectRegions(MazeLayout m) {
+        // HashMap<Position, Set<int>> connectorRegions = new HashMap<Position, Set<int>>();
+
+
+    }
 
     // Move on to the next region
     private void startRegion() {
