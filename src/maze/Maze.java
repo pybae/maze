@@ -1,6 +1,7 @@
 package maze;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.asset.TextureKey;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -19,13 +20,16 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.texture.Texture;
+import com.jme3.texture.Texture.WrapMode;
 
 public class Maze extends SimpleApplication implements ActionListener {
 
   private Spatial sceneModel;
-  private BulletAppState bulletAppState;
+  public BulletAppState bulletAppState;
   private RigidBodyControl landscape;
   private CharacterControl player; 
   private Vector3f camDir = new Vector3f();
@@ -33,6 +37,11 @@ public class Maze extends SimpleApplication implements ActionListener {
   private Vector3f walkDirection = new Vector3f();
   private boolean left = false, right = false, up = false, down = false;
 
+  
+  Material floor_mat;
+  
+  private RigidBodyControl    floor_phy;
+  private static final Box    floor;
     
     public Maze() {
     }
@@ -50,7 +59,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         mz.renderObject(new Vector3f(0, 1, 0),
                         rootNode,
                         assetManager);
-        mz.renderObject(new Vector3f(1, 0, 0),
+        mz.renderObject(new Vector3f(1, 2, 0),
                         rootNode,
                         assetManager);
 
@@ -61,6 +70,12 @@ public class Maze extends SimpleApplication implements ActionListener {
 
     }
 
+    static {
+        
+    floor = new Box(10f, 0.1f, 5f);
+    floor.scaleTextureCoordinates(new Vector2f(3, 6));
+    }
+    
     @Override
     public void simpleInitApp() {
         bulletAppState = new BulletAppState();
@@ -71,17 +86,21 @@ public class Maze extends SimpleApplication implements ActionListener {
         
         setUpKeys();
         setUpLight();
-
         
-        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
+        
+        
+        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1f, 6f, 1);
         player = new CharacterControl(capsuleShape, 0.05f);
         player.setJumpSpeed(20);
-        player.setFallSpeed(0);
+        player.setFallSpeed(30);
         player.setGravity(30);
         player.setPhysicsLocation(new Vector3f(5, 0, 0));
 
     bulletAppState.getPhysicsSpace().add(player);
-
+    bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+    initMaterials();
+    initFloor();
+        
         generateMaze();
     }
 
@@ -150,5 +169,23 @@ public class Maze extends SimpleApplication implements ActionListener {
         } else if (binding.equals("Jump")) {
           if (isPressed) { player.jump(); }
     }}
-
+    public void initMaterials() {
+    floor_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    TextureKey key3 = new TextureKey("Textures/Terrain/Pond/Pond.jpg");
+    key3.setGenerateMips(true);
+    Texture tex3 = assetManager.loadTexture(key3);
+    tex3.setWrap(WrapMode.Repeat);
+    floor_mat.setTexture("ColorMap", tex3);
+  }
+    public void initFloor() {
+        Geometry floor_geo = new Geometry("Floor", floor);
+        floor_geo.setMaterial(floor_mat);
+        floor_geo.setLocalTranslation(0, 0, 0);
+        this.rootNode.attachChild(floor_geo);
+        /* Make the floor physical with mass 0.0f! */
+        floor_phy = new RigidBodyControl(0.0f);
+        floor_geo.addControl(floor_phy);
+        bulletAppState.getPhysicsSpace().add(floor_phy);
+  }
+    
 }

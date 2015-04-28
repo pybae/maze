@@ -7,6 +7,7 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -21,11 +22,10 @@ public class WallEntity extends Maze implements MazeEntity {
     private float width;
     private float height;
     private Spatial sceneModel;
-  private BulletAppState bulletAppState;
   private RigidBodyControl landscape;
-
     public static final float WALL_LENGTH = 0.1f;
 
+    
     public WallEntity(float w, float h) {
         width = w;
         height = h;
@@ -51,9 +51,7 @@ public class WallEntity extends Maze implements MazeEntity {
          */
 
         
-        bulletAppState = new BulletAppState();
-        stateManager.attach(bulletAppState);
-        Box b = new Box(width/2, height/2, WALL_LENGTH / 2);
+         Box b = new Box(width/2, height/2, WALL_LENGTH / 2);
         Geometry box = new Geometry("Box", b);
         box.setLocalTranslation(new Vector3f(loc.x + width / 2,
                                              loc.y + height / 2,
@@ -63,12 +61,18 @@ public class WallEntity extends Maze implements MazeEntity {
                                     "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Blue);
         box.setMaterial(mat);
-        sceneModel = box;
-       CollisionShape sceneShape = CollisionShapeFactory.createMeshShape( sceneModel);
-       landscape = new RigidBodyControl(sceneShape, 0);
-       sceneModel.addControl(landscape);
+
+        rootNode.attachChild(box);
+        RigidBodyControl wallBody = new RigidBodyControl(0.0f);
+    box.addControl(wallBody);
+    bulletAppState.getPhysicsSpace().add(wallBody);
         
-        rootNode.attachChild(sceneModel);
-        bulletAppState.getPhysicsSpace().add(landscape);
+        
+//        
+//        boxBody = new RigidBodyControl(2f);
+//        box.addControl(boxBody);
+//        bulletAppState.getPhysicsSpace().add(boxBody);
+        //bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+
     }
 }
