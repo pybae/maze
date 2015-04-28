@@ -53,7 +53,7 @@ public class MazeGenerator {
         for(int r = 1; r < height; r += 2) {
             for(int c = 1; c < width; c += 2) {
                 if(layout.getState(r, c) == State.NOT_SET) {
-                    growMaze(layout, r, c);
+                    growMaze(layout, new Position(r, c));
                 }
             }
         }
@@ -67,14 +67,14 @@ public class MazeGenerator {
     private void defineWalls(MazeLayout m) {
         // Set left and right
         for(int r = 0; r < height; r++) {
-            carve(m, r, 0, State.WALL);
-            carve(m, r, width - 1, State.WALL);
+            carve(m, new Position(r, 0), State.WALL);
+            carve(m, new Position(r, width - 1), State.WALL);
         }
 
         // Set top and bottom
         for(int c = 1; c < width; c++) {
-            carve(m, 0, c, State.WALL);
-            carve(m, height - 1, c, State.WALL);
+            carve(m, new Position(0, c), State.WALL);
+            carve(m, new Position(height - 1, c), State.WALL);
         }
     }
 
@@ -118,18 +118,18 @@ public class MazeGenerator {
 
                 for(int r = y; r < y + roomHeight; r++) {
                     for(int c = x; c < x + roomWidth; c++) {
-                        carve(m, r, c, State.OPEN);
+                        carve(m, new Position(r, c), State.OPEN);
                     }
                 }
 
                 // encircle the room with walls
                 for(int r = y - 1; r < y + roomHeight + 1; r++) {
-                    carve(m, r, x - 1, State.WALL);
-                    carve(m, r, x + roomWidth, State.WALL);
+                    carve(m, new Position(r, x - 1), State.WALL);
+                    carve(m, new Position(r, x + roomWidth), State.WALL);
                 }
                 for(int c = x - 1; c < x + roomWidth + 1; c++) {
-                    carve(m, y - 1, c, State.WALL);
-                    carve(m, y + roomHeight, c, State.WALL);
+                    carve(m, new Position(y - 1, c), State.WALL);
+                    carve(m, new Position(y + roomHeight, c), State.WALL);
                 }
             }
 
@@ -140,7 +140,67 @@ public class MazeGenerator {
     }
     
     // Implements "growing tree" algorithm to build the maze
-    private void growMaze(MazeLayout m, int r, int c) {}
+    private void growMaze(MazeLayout m, Position pos) {
+        ArrayList<Position> cells = new ArrayList<Position>();
+        Direction lastDirection = null;
+
+        startRegion();
+        carve(m, pos, State.OPEN);
+
+        cells.add(pos);
+        while(!cells.isEmpty()) {
+            Position current = cells.get(cells.size() - 1);
+
+            ArrayList<Direction> openCells = new ArrayList<Direction>();
+            for(Direction d : Direction.values()) {
+                if(canCarve(m, current, d)) {
+                    openCells.add(d);
+                }
+            }
+
+            if(!openCells.isEmpty()) {
+                Random rand = new Random();
+                Direction d;
+
+                if(openCells.contains(lastDirection) && rand.nextInt(100) > windiness) {
+                    d = lastDirection;
+                } else {
+                    d = openCells.get(rand.nextInt(openCells.size()));
+                }
+
+                switch(d) {
+                    case UP:    current.r -= 1;
+                                carve(m, current, State.OPEN);
+                                current.r -= 1;
+                                carve(m, current, State.OPEN);
+                                break;
+                    case LEFT:  current.c -= 1;
+                                carve(m, current, State.OPEN);
+                                current.c -= 1;
+                                carve(m, current, State.OPEN);
+                                break;
+                    case DOWN:  current.r += 1;
+                                carve(m, current, State.OPEN);
+                                current.r += 1;
+                                carve(m, current, State.OPEN);
+                                break;
+                    case RIGHT: current.c += 1;
+                                carve(m, current, State.OPEN);
+                                current.c += 1;
+                                carve(m, current, State.OPEN);
+                                break;
+                    default:    return;
+                }
+
+                cells.add(current);
+                lastDirection = d;
+            } else {
+                cells.remove(cells.size() - 1);
+
+                lastDirection = null;
+            }
+        }
+    }
 
     // Ensure that all regions are connected
     private void connectRegions(MazeLayout m) {}
@@ -151,17 +211,42 @@ public class MazeGenerator {
     }
 
     // Adds a junction at a specified location
-    private void addJunction(MazeLayout m, int r, int c) {}
+    private void addJunction(MazeLayout m, Position pos) {}
 
     // Determines whether an opening can be carved from the cell at the
     //  specified location to the adjacent cell facing the specified direction
-    private boolean canCarve(MazeLayout m, int r, int c, Direction d) {
+    private boolean canCarve(MazeLayout m, Position pos, Direction d) {
+        switch(d) {
+            case UP:    return pos.r - 2 >= 0 && pos.c >= 0 &&
+                               pos.r - 2 < height && pos.c < width &&
+                               m.getState(pos.r - 2, pos.c) == State.NOT_SET;
+            case LEFT:  return pos.r >= 0 && pos.c - 2 >= 0 &&
+                               pos.r < height && pos.c - 2 < width &&
+                               m.getState(pos.r, pos.c - 2) == State.NOT_SET;
+            case DOWN:  return pos.r + 2 >= 0 && pos.c >= 0 &&
+                               pos.r + 2 < height && pos.c < width &&
+                               m.getState(pos.r + 2, pos.c) == State.NOT_SET;
+            case RIGHT: return pos.r >= 0 && pos.c + 2 >= 0 &&
+                               pos.r < height && pos.c + 2 < width &&
+                               m.getState(pos.r, pos.c + 2) == State.NOT_SET;
+        }
+
         return false;
     }
 
     // Set the state at the specified location
-    private void carve(MazeLayout m, int r, int c, State s) {
-        m.setState(r, c, s);
-        regions[r][c] = currentRegion;
+    private void carve(MazeLayout m, Position pos, State s) {
+        m.setState(pos.r, pos.c, s);
+        regions[pos.r][pos.c] = currentRegion;
+    }
+
+    private class Position {
+        public int r;
+        public int c;
+
+        public Position(int rIn, int cIn) {
+            r = rIn;
+            c = cIn;
+        }
     }
 }
