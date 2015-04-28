@@ -5,7 +5,6 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -14,7 +13,6 @@ import com.jme3.light.AmbientLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
-import com.jme3.scene.Node;
 
 public class Maze extends SimpleApplication implements ActionListener {
 
@@ -22,7 +20,7 @@ public class Maze extends SimpleApplication implements ActionListener {
     private PhysicsCharacter player;
     private boolean left, right, up, down;
     private Vector3f walkDirection = new Vector3f(0, 0, 0);
-    private static final float PLAYER_SPEED = 10.0f;
+    private static final float PLAYER_SPEED = 5.0f;
     private static final float RENDER_DISTANCE = 2000.0f;
 
     public Maze() {
@@ -34,7 +32,7 @@ public class Maze extends SimpleApplication implements ActionListener {
          * The maze itself should be a 2D array of MazeEntities
          * we can initialize which coordinates to pass into the entities
          */
-        MazeEntity mz = new WallEntity(3, 2);
+        MazeEntity mz = new WallEntity(15, 10);
         mz.renderObject(new Vector3f(0, 0, 0),
                         rootNode,
                         assetManager,
@@ -85,15 +83,16 @@ public class Maze extends SimpleApplication implements ActionListener {
             walkDirection.addLocal(camDir.negate());
         }
 
-        player.setWalkDirection(walkDirection.divide(PLAYER_SPEED));
         cam.setLocation(player.getPhysicsLocation());
+        player.setWalkDirection(walkDirection.divide(PLAYER_SPEED));
     }
 
     private void initPlayer() {
-        flyCam.setMoveSpeed(1);
+        flyCam.setEnabled(true);
+
         cam.setFrustumFar(RENDER_DISTANCE);
 
-        player = new PhysicsCharacter(new SphereCollisionShape(1.0f), 1.0f);
+        player = new PhysicsCharacter(new SphereCollisionShape(5.0f), 0.1f);
 
         // disallow player jump
         player.setJumpSpeed(0);
