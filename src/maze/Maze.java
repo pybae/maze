@@ -34,7 +34,7 @@ public class Maze extends SimpleApplication implements ActionListener {
          * The maze itself should be a 2D array of MazeEntities
          * we can initialize which coordinates to pass into the entities
          */
-        MazeEntity mz = new WallEntity(20, 5);
+        MazeEntity mz = new WallEntity(3, 2);
         mz.renderObject(new Vector3f(0, 0, 0),
                         rootNode,
                         assetManager,
@@ -56,7 +56,7 @@ public class Maze extends SimpleApplication implements ActionListener {
     public void simpleInitApp() {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
-        bulletAppState.setDebugEnabled(true);
+        bulletAppState.setDebugEnabled(false);
 
         initPlayer();
         initKeys();

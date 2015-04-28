@@ -2,9 +2,7 @@ package maze;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -56,7 +54,10 @@ public class WallEntity extends Maze implements MazeEntity {
 
         Material mat = new Material(assetManager,
                                     "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Blue);
+
+        // This asset is a 3 by 2 texture (3000 x 2000) px
+        mat.setTexture("ColorMap",
+                       assetManager.loadTexture("Textures/Terrain/Wall/DarkWall.jpg"));
         box.setMaterial(mat);
 
         rootNode.attachChild(box);
