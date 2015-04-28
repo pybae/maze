@@ -3,6 +3,7 @@ package maze;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.objects.PhysicsCharacter;
@@ -94,7 +95,8 @@ public class Maze extends SimpleApplication implements ActionListener {
         flyCam.setMoveSpeed(1);
         cam.setFrustumFar(100);
 
-        player = new PhysicsCharacter(new SphereCollisionShape(1.0f), 0);
+
+        player = new PhysicsCharacter(new SphereCollisionShape(1.0f), 1.0f);
 
         player.setJumpSpeed(20);
         player.setFallSpeed(30);
