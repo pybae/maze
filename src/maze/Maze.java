@@ -16,8 +16,8 @@ import com.jme3.scene.Node;
 public class Maze extends SimpleApplication implements ActionListener {
 
     private BulletAppState bulletAppState;
-    private Node characterNode;
-    private BetterCharacterControl player;
+    private Node player;
+    private BetterCharacterControl playerController;
     private boolean left,right,up,down;
     private Vector3f walkDirection = new Vector3f(0, 0, 0);
 
@@ -41,11 +41,11 @@ public class Maze extends SimpleApplication implements ActionListener {
         mz.renderObject(new Vector3f(1, 2, 0),
                         rootNode,
                         assetManager);
-
         OpenEntity oz = new OpenEntity(1, 1);
         oz.renderObject(new Vector3f(0, 0, WallEntity.WALL_LENGTH),
                         rootNode,
                         assetManager);
+
     }
 
     /**
@@ -59,17 +59,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         stateManager.attach(bulletAppState);
         bulletAppState.setDebugEnabled(true);
 
-        // constructor arguments are radius, height, and axis
-        characterNode = new Node("Character Node");
-        characterNode.setLocalTranslation(new Vector3f(0, 10.0f, 0));
-
-        player = new BetterCharacterControl(0.3f, 2.5f, 8f);
-        player.setGravity(new Vector3f(0, 0, 0));
-        characterNode.addControl(player);
-        getPhysicsSpace().add(player);
-
-        rootNode.attachChild(characterNode);
-
+        initPlayer();
         initKeys();
         initLight();
 
@@ -82,6 +72,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         Vector3f camLeft = cam.getLeft();
 
         walkDirection.set(0, 0, 0);
+
         if (left) {
             walkDirection.addLocal(camLeft);
         }
@@ -98,8 +89,20 @@ public class Maze extends SimpleApplication implements ActionListener {
         // uncomment this line and one cannot "fly" anymore
         // walkDirection.setY(0.0f);
 
-        player.setWalkDirection(walkDirection);
-        cam.setLocation(characterNode.getLocalTranslation());
+        playerController.setWalkDirection(walkDirection);
+        cam.setLocation(player.getLocalTranslation());
+    }
+
+    private void initPlayer() {
+        player = new Node("Character Node");
+        player.setLocalTranslation(new Vector3f(0, 10.0f, 0));
+
+        playerController = new BetterCharacterControl(0.3f, 2.5f, 8f);
+        playerController.setGravity(new Vector3f(0, 0, 0));
+        player.addControl(playerController);
+        getPhysicsSpace().add(playerController);
+
+        rootNode.attachChild(player);
     }
 
     private void initLight() {
