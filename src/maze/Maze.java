@@ -32,34 +32,14 @@ public class Maze extends SimpleApplication implements ActionListener {
          * The maze itself should be a 2D array of MazeEntities
          * we can initialize which coordinates to pass into the entities
          */
-        MazeEntity mz = new WallEntity(1, 1);
+        MazeEntity mz = new WallEntity(1, 5);
         mz.renderObject(new Vector3f(0, 0, 0),
                         rootNode,
                         assetManager,
                         getPhysicsSpace());
-        mz.renderObject(new Vector3f(0, 1, 0),
-                        rootNode,
-                        assetManager,
-                        getPhysicsSpace());
-        mz.renderObject(new Vector3f(1, 2, 0),
-                        rootNode,
-                        assetManager,
-                        getPhysicsSpace());
 
-        OpenEntity oz = new OpenEntity(1, 1);
+        OpenEntity oz = new OpenEntity(20, 20);
         oz.renderObject(new Vector3f(0, 0, WallEntity.WALL_LENGTH),
-                        rootNode,
-                        assetManager,
-                        getPhysicsSpace());
-        oz.renderObject(new Vector3f(0, 0, WallEntity.WALL_LENGTH),
-                        rootNode,
-                        assetManager,
-                        getPhysicsSpace());
-        oz.renderObject(new Vector3f(1, 0, WallEntity.WALL_LENGTH),
-                        rootNode,
-                        assetManager,
-                        getPhysicsSpace());
-        oz.renderObject(new Vector3f(1, 0, 1),
                         rootNode,
                         assetManager,
                         getPhysicsSpace());
@@ -106,21 +86,20 @@ public class Maze extends SimpleApplication implements ActionListener {
         // uncomment this line and one cannot "fly" anymore
         // walkDirection.setY(0.0f);
 
-        player.setWalkDirection(walkDirection);
+        player.setWalkDirection(walkDirection.divide(10));
         cam.setLocation(player.getPhysicsLocation());
     }
 
     private void initPlayer() {
-
-        flyCam.setMoveSpeed(2);
-        cam.setFrustumFar(2000);
+        flyCam.setMoveSpeed(1);
+        cam.setFrustumFar(100);
 
         player = new PhysicsCharacter(new SphereCollisionShape(1.0f), 0);
 
         player.setJumpSpeed(20);
         player.setFallSpeed(30);
-        player.setGravity(0);
-        player.setPhysicsLocation(new Vector3f(0, 0, 0));
+        player.setGravity(30);
+        player.setPhysicsLocation(new Vector3f(5, 5, 5));
 
         getPhysicsSpace().add(player);
     }

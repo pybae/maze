@@ -19,7 +19,7 @@ import com.jme3.scene.shape.Box;
 public class OpenEntity implements MazeEntity {
     private float width;
     private float length;
-    public static final float FLOOR_HEIGHT = 0;
+    public static final float FLOOR_HEIGHT = 0.1f;
 
     public OpenEntity(float w, float l) {
         width = w;

@@ -19,7 +19,7 @@ import com.jme3.scene.shape.Box;
 public class WallEntity extends Maze implements MazeEntity {
     private float width;
     private float height;
-    public static final float WALL_LENGTH = 0;
+    public static final float WALL_LENGTH = 0.1f;
 
 
     public WallEntity(float w, float h) {
