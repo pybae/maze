@@ -22,7 +22,8 @@ public class Maze extends SimpleApplication implements ActionListener {
     private PhysicsCharacter player;
     private boolean left, right, up, down;
     private Vector3f walkDirection = new Vector3f(0, 0, 0);
-
+    private static final float PLAYER_SPEED = 10.0f;
+    private static final float RENDER_DISTANCE = 2000.0f;
 
     public Maze() {
     }
@@ -33,7 +34,7 @@ public class Maze extends SimpleApplication implements ActionListener {
          * The maze itself should be a 2D array of MazeEntities
          * we can initialize which coordinates to pass into the entities
          */
-        MazeEntity mz = new WallEntity(1, 5);
+        MazeEntity mz = new WallEntity(20, 5);
         mz.renderObject(new Vector3f(0, 0, 0),
                         rootNode,
                         assetManager,
@@ -84,22 +85,19 @@ public class Maze extends SimpleApplication implements ActionListener {
             walkDirection.addLocal(camDir.negate());
         }
 
-        // uncomment this line and one cannot "fly" anymore
-        // walkDirection.setY(0.0f);
-
-        player.setWalkDirection(walkDirection.divide(10));
+        player.setWalkDirection(walkDirection.divide(PLAYER_SPEED));
         cam.setLocation(player.getPhysicsLocation());
     }
 
     private void initPlayer() {
         flyCam.setMoveSpeed(1);
-        cam.setFrustumFar(100);
-
+        cam.setFrustumFar(RENDER_DISTANCE);
 
         player = new PhysicsCharacter(new SphereCollisionShape(1.0f), 1.0f);
 
-        player.setJumpSpeed(20);
-        player.setFallSpeed(30);
+        // disallow player jump
+        player.setJumpSpeed(0);
+        player.setFallSpeed(20);
         player.setGravity(30);
         player.setPhysicsLocation(new Vector3f(5, 5, 5));
 
