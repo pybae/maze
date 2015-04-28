@@ -44,7 +44,7 @@ public class Maze extends SimpleApplication implements ActionListener {
                         rootNode,
                         assetManager,
                         getPhysicsSpace());
-        
+
         OpenEntity oz = new OpenEntity(1, 1);
         oz.renderObject(new Vector3f(0, 0, WallEntity.WALL_LENGTH),
                         rootNode,
@@ -111,10 +111,13 @@ public class Maze extends SimpleApplication implements ActionListener {
 
     private void initPlayer() {
         player = new Node("Character Node");
+        // starting position
         player.setLocalTranslation(new Vector3f(0, 10.0f, 0));
 
+        // mess around with the constructor parameters here:
+        // http://javadoc.jmonkeyengine.org/com/jme3/bullet/control/BetterCharacterControl.html
+        // collision faults are mainly due to this
         playerController = new BetterCharacterControl(0.3f, 2.5f, 8f);
-        playerController.setGravity(new Vector3f(0, 0, 0));
         player.addControl(playerController);
         getPhysicsSpace().add(playerController);
 
