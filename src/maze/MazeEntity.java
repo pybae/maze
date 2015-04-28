@@ -1,6 +1,7 @@
 package maze;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
@@ -12,7 +13,8 @@ import com.jme3.scene.Node;
  */
 public interface MazeEntity {
     public void renderObject(Vector3f loc, Node rootNode,
-                             AssetManager assetManager);
+                             AssetManager assetManager,
+                             PhysicsSpace physicsSpace);
     public float getWidth();
     public float getLength();
     public float getHeight();

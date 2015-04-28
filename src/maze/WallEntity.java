@@ -2,6 +2,7 @@ package maze;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -44,14 +45,15 @@ public class WallEntity extends Maze implements MazeEntity {
     }
 
     public void renderObject(Vector3f loc, Node rootNode,
-            AssetManager assetManager) {
+                             AssetManager assetManager,
+                             PhysicsSpace physicsSpace) {
         /**
          * documentation for the Box constructor can be found here:
          * http://javadoc.jmonkeyengine.org/com/jme3/scene/shape/Box.html#Box(float, float, float)
          */
 
 
-         Box b = new Box(width/2, height/2, WALL_LENGTH / 2);
+        Box b = new Box(width/2, height/2, WALL_LENGTH / 2);
         Geometry box = new Geometry("Box", b);
         box.setLocalTranslation(new Vector3f(loc.x + width / 2,
                                              loc.y + height / 2,
@@ -63,9 +65,11 @@ public class WallEntity extends Maze implements MazeEntity {
         box.setMaterial(mat);
 
         rootNode.attachChild(box);
-        // RigidBodyControl wallBody = new RigidBodyControl(0.0f);
-        // box.addControl(wallBody);
-        // bulletAppState.getPhysicsSpace().add(wallBody);
 
+        CollisionShape sceneShape = CollisionShapeFactory.createBoxShape(box);
+        RigidBodyControl landscape = new RigidBodyControl(sceneShape, 0);
+
+        box.addControl(landscape);
+        physicsSpace.add(landscape);
     }
 }

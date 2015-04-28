@@ -1,6 +1,10 @@
 package maze;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -35,7 +39,8 @@ public class OpenEntity implements MazeEntity {
     }
 
     public void renderObject(Vector3f loc, Node rootNode,
-            AssetManager assetManager) {
+                             AssetManager assetManager,
+                             PhysicsSpace physicsSpace) {
         /**
          * documentation for the Box constructor can be found here:
          * http://javadoc.jmonkeyengine.org/com/jme3/scene/shape/Box.html#Box(float, float, float)
@@ -53,5 +58,11 @@ public class OpenEntity implements MazeEntity {
         box.setMaterial(mat);
 
         rootNode.attachChild(box);
+
+        CollisionShape sceneShape = CollisionShapeFactory.createBoxShape(box);
+        RigidBodyControl landscape = new RigidBodyControl(sceneShape, 0);
+
+        box.addControl(landscape);
+        physicsSpace.add(landscape);
     }
 }
