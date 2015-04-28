@@ -4,10 +4,12 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
+import com.jme3.texture.Texture;
 
 /**
  * WallEntity class, which represents a wall
@@ -17,6 +19,8 @@ public class WallEntity extends Maze implements MazeEntity {
     private float width;
     private float height;
     public static final float WALL_LENGTH = 0.1f;
+    public static final float TEXTURE_WIDTH = 30.0f;
+    public static final float TEXTURE_HEIGHT = 20.0f;
 
 
     public WallEntity(float w, float h) {
@@ -55,8 +59,13 @@ public class WallEntity extends Maze implements MazeEntity {
                                     "Common/MatDefs/Misc/Unshaded.j3md");
 
         // This asset is a 3 by 2 texture (3000 x 2000) px
-        mat.setTexture("ColorMap",
-                       assetManager.loadTexture("Textures/Terrain/Wall/DarkWall.jpg"));
+        Texture texture = assetManager.loadTexture("Textures/Terrain/Wall/Wall.jpg");
+        texture.setWrap(Texture.WrapMode.Repeat);
+
+        box.getMesh().scaleTextureCoordinates(new Vector2f((float) Math.ceil(width / TEXTURE_WIDTH),
+                                                           (float) Math.ceil(height / TEXTURE_HEIGHT)));
+
+        mat.setTexture("ColorMap", texture);
         box.setMaterial(mat);
 
         rootNode.attachChild(box);

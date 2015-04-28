@@ -2,15 +2,14 @@ package maze;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
+import com.jme3.texture.Texture;
 
 /**
  * represents open space in a maze, such as those in the middle of the maze
@@ -20,6 +19,8 @@ public class OpenEntity implements MazeEntity {
     private float width;
     private float length;
     public static final float FLOOR_HEIGHT = 0.1f;
+    public static final float TEXTURE_WIDTH = 50.0f;
+    public static final float TEXTURE_LENGTH = 50.0f;
 
     public OpenEntity(float w, float l) {
         width = w;
@@ -54,9 +55,15 @@ public class OpenEntity implements MazeEntity {
 
         Material mat = new Material(assetManager,
                                     "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Red);
-        box.setMaterial(mat);
 
+        Texture texture = assetManager.loadTexture("Textures/Terrain/Floor/DarkFloor.jpg");
+        texture.setWrap(Texture.WrapMode.Repeat);
+
+        box.getMesh().scaleTextureCoordinates(new Vector2f((float) Math.ceil(width / TEXTURE_WIDTH),
+                                                           (float) Math.ceil(length / TEXTURE_LENGTH)));
+
+        mat.setTexture("ColorMap", texture);
+        box.setMaterial(mat);
         rootNode.attachChild(box);
 
         // make the object static
