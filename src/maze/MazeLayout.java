@@ -28,6 +28,8 @@ public class MazeLayout {
             for(int c = 0; c < maze[0].length; c++) {
                 if(maze[r][c] == State.WALL) {
                     System.out.print("* ");
+                } else if(maze[r][c] == State.DOOR) {
+                    System.out.print("O ");
                 } else if(maze[r][c] == State.NOT_SET) {
                     System.out.print("- ");
                 } else {
