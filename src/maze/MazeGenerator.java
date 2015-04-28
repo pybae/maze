@@ -30,7 +30,7 @@ public class MazeGenerator {
         maxRoomSize = maxRoomSizeIn;
         roomTries = roomTriesIn;
         minRooms = minRoomsIn;
-        extraConnectorChance = 20;
+        extraConnectorChance = 100;
 
         currentRegion = -1;
     }
@@ -96,6 +96,25 @@ public class MazeGenerator {
                 }
             }
         }
+    }
+
+    private boolean canBeBlasted(MazeLayout m, Position pos) {
+        int count = 0;
+
+        if(m.getState(pos.r - 1, pos.c) == State.NOT_SET ||
+           m.getState(pos.r - 1, pos.c) == State.WALL)
+            count++;
+        if(m.getState(pos.r, pos.c - 1) == State.NOT_SET ||
+           m.getState(pos.r, pos.c - 1) == State.WALL)
+            count++;
+        if(m.getState(pos.r + 1, pos.c) == State.NOT_SET ||
+           m.getState(pos.r + 1, pos.c) == State.WALL)
+            count++;
+        if(m.getState(pos.r, pos.c + 1) == State.NOT_SET ||
+           m.getState(pos.r, pos.c + 1) == State.WALL)
+            count++;
+
+        return count < 3;
     }
 
     // Place rooms in the maze
@@ -228,7 +247,8 @@ public class MazeGenerator {
 
         for(int r = 1; r < height - 1; r++) {
             for(int c = 1; c < width - 1; c++) {
-                if(m.getState(r, c) != State.NOT_SET && m.getState(r, c) != State.WALL) {
+                if((m.getState(r, c) != State.NOT_SET && m.getState(r, c) != State.WALL) ||
+                   !canBeBlasted(m, new Position(r, c))) {
                     continue;
                 }
 
@@ -261,6 +281,10 @@ public class MazeGenerator {
         }
 
         Set<Position> connectors = connectorRegions.keySet();
+        if(connectors.size() == 0) {
+            System.out.println("no connectors");
+            return;
+        }
 
         HashMap<Integer, Integer> merged = new HashMap<Integer, Integer>();
         HashSet<Integer> openRegions = new HashSet<Integer>();
