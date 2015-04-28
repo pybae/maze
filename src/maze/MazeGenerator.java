@@ -247,8 +247,7 @@ public class MazeGenerator {
 
         for(int r = 1; r < height - 1; r++) {
             for(int c = 1; c < width - 1; c++) {
-                if((m.getState(r, c) != State.NOT_SET && m.getState(r, c) != State.WALL) ||
-                   !canBeBlasted(m, new Position(r, c))) {
+                if(m.getState(r, c) != State.NOT_SET && m.getState(r, c) != State.WALL) {
                     continue;
                 }
 
