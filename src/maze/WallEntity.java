@@ -22,8 +22,6 @@ import com.jme3.scene.shape.Box;
 public class WallEntity extends Maze implements MazeEntity {
     private float width;
     private float height;
-    private Spatial sceneModel;
-  private RigidBodyControl landscape;
     public static final float WALL_LENGTH = 0.1f;
 
 

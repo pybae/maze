@@ -44,12 +44,24 @@ public class Maze extends SimpleApplication implements ActionListener {
                         rootNode,
                         assetManager,
                         getPhysicsSpace());
+        
         OpenEntity oz = new OpenEntity(1, 1);
         oz.renderObject(new Vector3f(0, 0, WallEntity.WALL_LENGTH),
                         rootNode,
                         assetManager,
                         getPhysicsSpace());
-
+        oz.renderObject(new Vector3f(0, 0, WallEntity.WALL_LENGTH),
+                        rootNode,
+                        assetManager,
+                        getPhysicsSpace());
+        oz.renderObject(new Vector3f(1, 0, WallEntity.WALL_LENGTH),
+                        rootNode,
+                        assetManager,
+                        getPhysicsSpace());
+        oz.renderObject(new Vector3f(1, 0, 1),
+                        rootNode,
+                        assetManager,
+                        getPhysicsSpace());
     }
 
     /**
