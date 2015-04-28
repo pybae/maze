@@ -1,48 +1,27 @@
 package maze;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.asset.TextureKey;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.RenderManager;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Box;
-
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
-import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.control.CharacterControl;
-import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
-import com.jme3.light.DirectionalLight;
-import com.jme3.math.Vector2f;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
+import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import com.jme3.texture.Texture;
-import com.jme3.texture.Texture.WrapMode;
 
 public class Maze extends SimpleApplication implements ActionListener {
 
-  private Spatial sceneModel;
-  public BulletAppState bulletAppState;
-  private RigidBodyControl landscape;
-  private CharacterControl player; 
-  private Vector3f camDir = new Vector3f();
-  private Vector3f camLeft = new Vector3f();
-  private Vector3f walkDirection = new Vector3f();
-  private boolean left = false, right = false, up = false, down = false;
+    private BulletAppState bulletAppState;
+    private Node characterNode;
+    private BetterCharacterControl player;
+    private boolean left,right,up,down;
+    private Vector3f walkDirection = new Vector3f(0, 0, 0);
 
-  
-  Material floor_mat;
-  
-  private RigidBodyControl    floor_phy;
-  private static final Box    floor;
-    
+
     public Maze() {
     }
 
@@ -67,73 +46,41 @@ public class Maze extends SimpleApplication implements ActionListener {
         oz.renderObject(new Vector3f(0, 0, WallEntity.WALL_LENGTH),
                         rootNode,
                         assetManager);
-
     }
 
-    static {
-        
-    floor = new Box(10f, 0.1f, 5f);
-    floor.scaleTextureCoordinates(new Vector2f(3, 6));
-    }
-    
+    /**
+     * this is the method that is invoked when the class is first instantiated
+     * in other words, game load
+     * Here, we setup the user models, add them to Bullet space, and initialize the maze
+     */
     @Override
     public void simpleInitApp() {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
+        bulletAppState.setDebugEnabled(true);
 
-        viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
-        flyCam.setMoveSpeed(100);
-        
-        setUpKeys();
-        setUpLight();
-        
-        
-        
-        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1f, 6f, 1);
-        player = new CharacterControl(capsuleShape, 0.05f);
-        player.setJumpSpeed(20);
-        player.setFallSpeed(30);
-        player.setGravity(30);
-        player.setPhysicsLocation(new Vector3f(5, 0, 0));
+        // constructor arguments are radius, height, and axis
+        characterNode = new Node("Character Node");
+        characterNode.setLocalTranslation(new Vector3f(0, 10.0f, 0));
 
-    bulletAppState.getPhysicsSpace().add(player);
-    bulletAppState.getPhysicsSpace().enableDebug(assetManager);
-    initMaterials();
-    initFloor();
-        
+        player = new BetterCharacterControl(0.3f, 2.5f, 8f);
+        player.setGravity(new Vector3f(0, 0, 0));
+        characterNode.addControl(player);
+        getPhysicsSpace().add(player);
+
+        rootNode.attachChild(characterNode);
+
+        initKeys();
+        initLight();
+
         generateMaze();
     }
 
-    private void setUpLight() {
-    // We add light so we see the scene
-    AmbientLight al = new AmbientLight();
-    al.setColor(ColorRGBA.White.mult(1.3f));
-    rootNode.addLight(al);
- 
-    DirectionalLight dl = new DirectionalLight();
-    dl.setColor(ColorRGBA.White);
-    dl.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalizeLocal());
-    rootNode.addLight(dl);
-  }
-    
-     private void setUpKeys() {
-    inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
-    inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
-    inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
-    inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
-    inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
-    inputManager.addListener(this, "Left");
-    inputManager.addListener(this, "Right");
-    inputManager.addListener(this, "Up");
-    inputManager.addListener(this, "Down");
-    inputManager.addListener(this, "Jump");
-  }
- 
-    
     @Override
     public void simpleUpdate(float tpf) {
-        camDir.set(cam.getDirection()).multLocal(0.6f);
-        camLeft.set(cam.getLeft()).multLocal(0.4f);
+        Vector3f camDir = cam.getDirection();
+        Vector3f camLeft = cam.getLeft();
+
         walkDirection.set(0, 0, 0);
         if (left) {
             walkDirection.addLocal(camLeft);
@@ -147,45 +94,49 @@ public class Maze extends SimpleApplication implements ActionListener {
         if (down) {
             walkDirection.addLocal(camDir.negate());
         }
+
+        // uncomment this line and one cannot "fly" anymore
+        // walkDirection.setY(0.0f);
+
         player.setWalkDirection(walkDirection);
-        cam.setLocation(player.getPhysicsLocation());
+        cam.setLocation(characterNode.getLocalTranslation());
+    }
+
+    private void initLight() {
+        AmbientLight ambient = new AmbientLight();
+        ambient.setColor(ColorRGBA.White.mult(5f));
+        rootNode.addLight(ambient);
+    }
+
+    private void initKeys() {
+        inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
+        inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
+        inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
+        inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
+        inputManager.addListener(this, "Left");
+        inputManager.addListener(this, "Right");
+        inputManager.addListener(this, "Up");
+        inputManager.addListener(this, "Down");
+    }
+
+    public void onAction(String binding, boolean isPressed, float tpf) {
+        if (binding.equals("Left")) {
+            left = isPressed;
+        } else if (binding.equals("Right")) {
+            right = isPressed;
+        } else if (binding.equals("Up")) {
+            up = isPressed;
+        } else if (binding.equals("Down")) {
+            down = isPressed;
+        }
+    }
+
+    public PhysicsSpace getPhysicsSpace() {
+        return bulletAppState.getPhysicsSpace();
     }
 
     @Override
     public void simpleRender(RenderManager rm) {
-        //TODO: add render code
     }
 
-    @Override
-    public void onAction(String binding, boolean isPressed, float tpf) {
-        if (binding.equals("Left")) {
-          left = isPressed;
-        } else if (binding.equals("Right")) {
-          right= isPressed;
-        } else if (binding.equals("Up")) {
-          up = isPressed;
-        } else if (binding.equals("Down")) {
-          down = isPressed;
-        } else if (binding.equals("Jump")) {
-          if (isPressed) { player.jump(); }
-    }}
-    public void initMaterials() {
-    floor_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-    TextureKey key3 = new TextureKey("Textures/Terrain/Pond/Pond.jpg");
-    key3.setGenerateMips(true);
-    Texture tex3 = assetManager.loadTexture(key3);
-    tex3.setWrap(WrapMode.Repeat);
-    floor_mat.setTexture("ColorMap", tex3);
-  }
-    public void initFloor() {
-        Geometry floor_geo = new Geometry("Floor", floor);
-        floor_geo.setMaterial(floor_mat);
-        floor_geo.setLocalTranslation(0, 0, 0);
-        this.rootNode.attachChild(floor_geo);
-        /* Make the floor physical with mass 0.0f! */
-        floor_phy = new RigidBodyControl(0.0f);
-        floor_geo.addControl(floor_phy);
-        bulletAppState.getPhysicsSpace().add(floor_phy);
-  }
-    
 }

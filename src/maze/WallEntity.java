@@ -25,7 +25,7 @@ public class WallEntity extends Maze implements MazeEntity {
   private RigidBodyControl landscape;
     public static final float WALL_LENGTH = 0.1f;
 
-    
+
     public WallEntity(float w, float h) {
         width = w;
         height = h;
@@ -50,7 +50,7 @@ public class WallEntity extends Maze implements MazeEntity {
          * http://javadoc.jmonkeyengine.org/com/jme3/scene/shape/Box.html#Box(float, float, float)
          */
 
-        
+
          Box b = new Box(width/2, height/2, WALL_LENGTH / 2);
         Geometry box = new Geometry("Box", b);
         box.setLocalTranslation(new Vector3f(loc.x + width / 2,
@@ -63,16 +63,9 @@ public class WallEntity extends Maze implements MazeEntity {
         box.setMaterial(mat);
 
         rootNode.attachChild(box);
-        RigidBodyControl wallBody = new RigidBodyControl(0.0f);
-    box.addControl(wallBody);
-    bulletAppState.getPhysicsSpace().add(wallBody);
-        
-        
-//        
-//        boxBody = new RigidBodyControl(2f);
-//        box.addControl(boxBody);
-//        bulletAppState.getPhysicsSpace().add(boxBody);
-        //bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+        // RigidBodyControl wallBody = new RigidBodyControl(0.0f);
+        // box.addControl(wallBody);
+        // bulletAppState.getPhysicsSpace().add(wallBody);
 
     }
 }
