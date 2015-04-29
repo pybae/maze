@@ -14,6 +14,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
+import com.jme3.scene.Node;
 
 public class Maze extends SimpleApplication implements ActionListener {
 
@@ -69,7 +70,7 @@ public class Maze extends SimpleApplication implements ActionListener {
     public void simpleUpdate(float tpf) {
         Vector3f camDir = cam.getDirection();
         Vector3f camLeft = cam.getLeft();
-        Vector3f playerLoc;
+        Vector3f camLoc = cam.getLocation();
 
         walkDirection.set(0, 0, 0);
 
@@ -86,11 +87,10 @@ public class Maze extends SimpleApplication implements ActionListener {
             walkDirection.addLocal(camDir.negate());
         }
 
-        playerLoc = player.getPhysicsLocation();
         player.setWalkDirection(walkDirection.divide(PLAYER_SPEED));
-        flashLight1.setPosition(playerLoc);
-        flashLight2.setPosition(playerLoc);
-        flashLightRim.setPosition(playerLoc);
+        flashLight1.setPosition(camLoc);
+        flashLight2.setPosition(camLoc);
+        flashLightRim.setPosition(camLoc);
         flashLight1.setDirection(camDir);
         flashLight2.setDirection(camDir);
         flashLightRim.setDirection(camDir);
@@ -117,7 +117,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         flashLight1.setSpotRange(20);
         flashLight1.setSpotInnerAngle(0f * FastMath.DEG_TO_RAD);
         flashLight1.setSpotOuterAngle(60f * FastMath.DEG_TO_RAD);
-        flashLight1.setColor(ColorRGBA.White.mult(1.5f));
+        flashLight1.setColor(ColorRGBA.White.mult(2f));
         flashLight1.setPosition(cam.getLocation());
         flashLight1.setDirection(cam.getDirection());
         rootNode.addLight(flashLight1);
@@ -126,7 +126,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         flashLight2.setSpotRange(25);
         flashLight2.setSpotInnerAngle(12f * FastMath.DEG_TO_RAD);
         flashLight2.setSpotOuterAngle(13f * FastMath.DEG_TO_RAD);
-        flashLight2.setColor(ColorRGBA.Gray.mult(1.0f));
+        flashLight2.setColor(ColorRGBA.Gray.mult(0.75f));
         flashLight2.setPosition(cam.getLocation());
         flashLight2.setDirection(cam.getDirection());
         rootNode.addLight(flashLight2);
@@ -135,10 +135,12 @@ public class Maze extends SimpleApplication implements ActionListener {
         flashLightRim.setSpotRange(20);
         flashLightRim.setSpotInnerAngle(23f * FastMath.DEG_TO_RAD);
         flashLightRim.setSpotOuterAngle(24f * FastMath.DEG_TO_RAD);
-        flashLightRim.setColor(ColorRGBA.Gray.mult(5f));
+        flashLightRim.setColor(ColorRGBA.Gray.mult(0.25f));
         flashLightRim.setPosition(cam.getLocation());
         flashLightRim.setDirection(cam.getDirection());
         rootNode.addLight(flashLightRim);
+
+
     }
 
     private void initKeys() {

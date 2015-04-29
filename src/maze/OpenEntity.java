@@ -54,7 +54,7 @@ public class OpenEntity implements MazeEntity {
                                              loc.z + length / 2));
 
         Material mat = new Material(assetManager,
-                                    "Common/MatDefs/Misc/Unshaded.j3md");
+                                    "Common/MatDefs/Light/Lighting.j3md");
 
         Texture texture = assetManager.loadTexture("Textures/Terrain/Floor/DarkFloor.jpg");
         texture.setWrap(Texture.WrapMode.Repeat);
@@ -62,7 +62,7 @@ public class OpenEntity implements MazeEntity {
         box.getMesh().scaleTextureCoordinates(new Vector2f((float) Math.ceil(width / TEXTURE_WIDTH),
                                                            (float) Math.ceil(length / TEXTURE_LENGTH)));
 
-        mat.setTexture("ColorMap", texture);
+        mat.setTexture("DiffuseMap", texture);
         box.setMaterial(mat);
         rootNode.attachChild(box);
 
