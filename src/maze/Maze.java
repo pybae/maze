@@ -11,7 +11,9 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
+import com.jme3.light.SpotLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
@@ -20,6 +22,7 @@ public class Maze extends SimpleApplication implements ActionListener {
 
     private BulletAppState bulletAppState;
     private PhysicsCharacter player;
+    private SpotLight flashLight1, flashLight2, flashLightRim;
     private boolean left, right, up, down;
     private Vector3f walkDirection = new Vector3f(0, 0, 0);
     private static final float PLAYER_SPEED = 10.0f;
@@ -69,6 +72,7 @@ public class Maze extends SimpleApplication implements ActionListener {
     public void simpleUpdate(float tpf) {
         Vector3f camDir = cam.getDirection();
         Vector3f camLeft = cam.getLeft();
+        Vector3f playerLoc;
 
         walkDirection.set(0, 0, 0);
 
@@ -85,8 +89,16 @@ public class Maze extends SimpleApplication implements ActionListener {
             walkDirection.addLocal(camDir.negate());
         }
 
+        playerLoc = player.getPhysicsLocation();
+        playerLoc.setZ(playerLoc.getZ() + 0.2f);
         player.setWalkDirection(walkDirection.divide(PLAYER_SPEED));
-        cam.setLocation(player.getPhysicsLocation());
+        cam.setLocation(playerLoc);
+        flashLight1.setPosition(playerLoc);
+        flashLight2.setPosition(playerLoc);
+        flashLight1.setDirection(camDir);
+        flashLight2.setDirection(camDir);
+        flashLightRim.setDirection(camDir);
+        flashLightRim.setDirection(camDir);
     }
 
     private void initPlayer() {
@@ -100,14 +112,36 @@ public class Maze extends SimpleApplication implements ActionListener {
         player.setFallSpeed(20);
         player.setGravity(30);
         player.setPhysicsLocation(new Vector3f(5, 5, 5));
-
         getPhysicsSpace().add(player);
     }
 
     private void initLight() {
-        AmbientLight ambient = new AmbientLight();
-        ambient.setColor(ColorRGBA.White.mult(5f));
-        rootNode.addLight(ambient);
+        flashLight1 = new SpotLight();
+        flashLight1.setSpotRange(4);
+        flashLight1.setSpotInnerAngle(0f * FastMath.DEG_TO_RAD);
+        flashLight1.setSpotOuterAngle(60f * FastMath.DEG_TO_RAD);
+        flashLight1.setColor(ColorRGBA.White.mult(1.5f));
+        flashLight1.setPosition(cam.getLocation());
+        flashLight1.setDirection(cam.getDirection());
+        rootNode.addLight(flashLight1);
+
+        flashLight2 = new SpotLight();
+        flashLight2.setSpotRange(5);
+        flashLight2.setSpotInnerAngle(12f * FastMath.DEG_TO_RAD);
+        flashLight2.setSpotOuterAngle(13f * FastMath.DEG_TO_RAD);
+        flashLight2.setColor(ColorRGBA.Gray.mult(1.0f));
+        flashLight2.setPosition(cam.getLocation());
+        flashLight2.setDirection(cam.getDirection());
+        rootNode.addLight(flashLight2);
+
+        flashLightRim = new SpotLight();
+        flashLightRim.setSpotRange(4);
+        flashLightRim.setSpotInnerAngle(23f * FastMath.DEG_TO_RAD);
+        flashLightRim.setSpotOuterAngle(24f * FastMath.DEG_TO_RAD);
+        flashLightRim.setColor(ColorRGBA.Gray.mult(5f));
+        flashLightRim.setPosition(cam.getLocation());
+        flashLightRim.setDirection(cam.getDirection());
+        rootNode.addLight(flashLightRim);
     }
 
     private void initKeys() {

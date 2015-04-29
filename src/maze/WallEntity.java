@@ -9,6 +9,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
+import com.jme3.util.TangentBinormalGenerator;
 
 /**
  * WallEntity class, which represents a wall
@@ -48,16 +49,22 @@ public class WallEntity extends Maze implements MazeEntity {
 
         Box b = new Box(width/2, height/2, WALL_LENGTH / 2);
         Geometry box = new Geometry("Box", b);
+        TangentBinormalGenerator.generate(b);
         box.setLocalTranslation(new Vector3f(loc.x + width / 2,
                                              loc.y + height / 2,
                                              loc.z + WALL_LENGTH / 2));
 
         Material mat = new Material(assetManager,
-                                    "Common/MatDefs/Misc/Unshaded.j3md");
+            "Common/MatDefs/Light/Lighting.j3md");
 
         // This asset is a 3 by 2 texture (3000 x 2000) px
-        mat.setTexture("ColorMap",
-                       assetManager.loadTexture("Textures/Terrain/Wall/DarkWall.jpg"));
+        mat.setTexture("DiffuseMap",
+                       assetManager.loadTexture("Textures/Terrain/Wall/TheWall_d.jpg"));
+        mat.setBoolean("UseMaterialColors", true);
+        mat.setColor("Diffuse", ColorRGBA.White);
+        mat.setColor("Specular", ColorRGBA.White);
+        //Shininess is broken with the flashlight
+        //mat.setFloat("Shininess", 10f);
         box.setMaterial(mat);
 
         rootNode.attachChild(box);
