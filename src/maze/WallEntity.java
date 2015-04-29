@@ -5,11 +5,13 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.util.TangentBinormalGenerator;
+import com.jme3.texture.Texture;
 
 /**
  * WallEntity class, which represents a wall
@@ -19,6 +21,8 @@ public class WallEntity extends Maze implements MazeEntity {
     private float width;
     private float height;
     public static final float WALL_LENGTH = 0.1f;
+    public static final float TEXTURE_WIDTH = 30.0f;
+    public static final float TEXTURE_HEIGHT = 20.0f;
 
 
     public WallEntity(float w, float h) {
@@ -49,7 +53,7 @@ public class WallEntity extends Maze implements MazeEntity {
 
         Box b = new Box(width/2, height/2, WALL_LENGTH / 2);
         Geometry box = new Geometry("Box", b);
-        TangentBinormalGenerator.generate(b);
+        //TangentBinormalGenerator.generate(b);
         box.setLocalTranslation(new Vector3f(loc.x + width / 2,
                                              loc.y + height / 2,
                                              loc.z + WALL_LENGTH / 2));

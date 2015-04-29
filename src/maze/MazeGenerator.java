@@ -14,6 +14,7 @@ public class MazeGenerator {
     private int maxRoomSize;
     private int roomTries;
     private int minRooms;
+    private int extraConnectorChance;
 
     private ArrayList<Rectangle> rooms;
     private int[][] regions;
@@ -29,6 +30,7 @@ public class MazeGenerator {
         maxRoomSize = maxRoomSizeIn;
         roomTries = roomTriesIn;
         minRooms = minRoomsIn;
+        extraConnectorChance = 100;
 
         currentRegion = -1;
     }
@@ -43,6 +45,13 @@ public class MazeGenerator {
         MazeLayout layout = new MazeLayout(width, height);
         rooms = new ArrayList<Rectangle>();
         regions = new int[height][width];
+
+        for(int r = 0; r < height; r++) {
+            for(int c = 0; c < width; c++) {
+                regions[r][c] = -1;
+            }
+        }
+
         currentRegion = -1;
 
         defineWalls(layout);
@@ -87,6 +96,25 @@ public class MazeGenerator {
                 }
             }
         }
+    }
+
+    private boolean canBeBlasted(MazeLayout m, Position pos) {
+        int count = 0;
+
+        if(m.getState(pos.r - 1, pos.c) == State.NOT_SET ||
+           m.getState(pos.r - 1, pos.c) == State.WALL)
+            count++;
+        if(m.getState(pos.r, pos.c - 1) == State.NOT_SET ||
+           m.getState(pos.r, pos.c - 1) == State.WALL)
+            count++;
+        if(m.getState(pos.r + 1, pos.c) == State.NOT_SET ||
+           m.getState(pos.r + 1, pos.c) == State.WALL)
+            count++;
+        if(m.getState(pos.r, pos.c + 1) == State.NOT_SET ||
+           m.getState(pos.r, pos.c + 1) == State.WALL)
+            count++;
+
+        return count < 3;
     }
 
     // Place rooms in the maze
@@ -215,9 +243,128 @@ public class MazeGenerator {
 
     // Ensure that all regions are connected
     private void connectRegions(MazeLayout m) {
-        // HashMap<Position, Set<int>> connectorRegions = new HashMap<Position, Set<int>>();
+        HashMap<Position, HashSet<Integer>> connectorRegions = new HashMap<Position, HashSet<Integer>>();
+
+        for(int r = 1; r < height - 1; r++) {
+            for(int c = 1; c < width - 1; c++) {
+                if(m.getState(r, c) != State.NOT_SET && m.getState(r, c) != State.WALL) {
+                    continue;
+                }
+
+                HashSet<Integer> connectableRegions = new HashSet<Integer>();
+                for(Direction d : Direction.values()) {
+                    switch(d) {
+                        case UP:    if(regions[r - 1][c] != -1) {
+                                        connectableRegions.add(regions[r - 1][c]);
+                                    }
+                                    break;
+                        case LEFT:  if(regions[r][c - 1] != -1) {
+                                        connectableRegions.add(regions[r][c - 1]);
+                                    }
+                                    break;
+                        case DOWN:  if(regions[r + 1][c] != -1) {
+                                        connectableRegions.add(regions[r + 1][c]);
+                                    }
+                                    break;
+                        case RIGHT: if(regions[r][c + 1] != -1) {
+                                        connectableRegions.add(regions[r][c + 1]);
+                                    }
+                                    break;
+                    }
+                }
+
+                if(connectableRegions.size() > 1) {
+                    connectorRegions.put(new Position(r, c), new HashSet<Integer>(connectableRegions));
+                }
+            }
+        }
+
+        Set<Position> connectors = connectorRegions.keySet();
+        if(connectors.size() == 0) {
+            System.out.println("no connectors");
+            return;
+        }
+
+        HashMap<Integer, Integer> merged = new HashMap<Integer, Integer>();
+        HashSet<Integer> openRegions = new HashSet<Integer>();
+        for(int i = 0; i < currentRegion; i++) {
+            merged.put(i, i);
+            openRegions.add(i);
+        }
+
+        while(openRegions.size() > 1) {
+            Random rand = new Random();
+            Position connector = null;
+            int selection = rand.nextInt(connectors.size());
+
+            int count = 0;
+            for(Position pos : connectors) {
+                if(count == selection) {
+                    connector = pos;
+                }
+
+                count++;
+            }
+
+            addJunction(m, connector);
+
+            HashSet<Integer> connectableRegions = connectorRegions.get(connector);
+            for(Integer reg : new HashSet<Integer>(connectableRegions)) {
+                connectableRegions.remove(reg);
+                connectableRegions.add(merged.get(reg));
+            }
+
+            Integer dest = -1;
+            HashSet<Integer> sources = new HashSet<Integer>();
+
+            count = 0;
+            for(Integer reg : connectableRegions) {
+                if(count == 0) {
+                    dest = reg;
+                } else {
+                    sources.add(reg);
+                }
+
+                count++;
+            }
+
+            for(int i = 0; i < currentRegion; i++) {
+                if(sources.contains(merged.get(i))) {
+                    merged.put(i, dest);
+                }
+            }
+
+            for(Integer source : sources) {
+                openRegions.remove(source);
+            }
 
 
+            ArrayList<Position> toRemove = new ArrayList<Position>();
+            for(Position pos : connectors) {
+                if(connector.isAdjacentTo(pos)) {
+                    toRemove.add(pos);
+                    continue;
+                }
+
+                connectableRegions = connectorRegions.get(pos);
+                for(Integer reg : new HashSet<Integer>(connectableRegions)) {
+                    connectableRegions.remove(reg);
+                    connectableRegions.add(merged.get(reg));
+                }
+
+                if(connectableRegions.size() > 1) {
+                    continue;
+                }
+
+                if(rand.nextInt(extraConnectorChance) == 0) {
+                    addJunction(m, pos);
+                }
+
+                toRemove.add(pos);
+            }
+
+            connectors.removeAll(toRemove);
+        }
     }
 
     // Move on to the next region
@@ -226,7 +373,9 @@ public class MazeGenerator {
     }
 
     // Adds a junction at a specified location
-    private void addJunction(MazeLayout m, Position pos) {}
+    private void addJunction(MazeLayout m, Position pos) {
+        m.setState(pos.r, pos.c, State.OPEN);
+    }
 
     // Determines whether an opening can be carved from the cell at the
     //  specified location to the adjacent cell facing the specified direction
@@ -262,6 +411,14 @@ public class MazeGenerator {
         public Position(int rIn, int cIn) {
             r = rIn;
             c = cIn;
+        }
+
+        public boolean equals(Position other) {
+            return r == other.r && c == other.c;
+        }
+
+        public boolean isAdjacentTo(Position other) {
+            return Math.abs(r - other.r) + Math.abs(c - other.c) < 2;
         }
     }
 }

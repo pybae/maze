@@ -3,9 +3,7 @@ package maze;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -16,7 +14,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
-import com.jme3.scene.Node;
 
 public class Maze extends SimpleApplication implements ActionListener {
 
@@ -25,7 +22,7 @@ public class Maze extends SimpleApplication implements ActionListener {
     private SpotLight flashLight1, flashLight2, flashLightRim;
     private boolean left, right, up, down;
     private Vector3f walkDirection = new Vector3f(0, 0, 0);
-    private static final float PLAYER_SPEED = 10.0f;
+    private static final float PLAYER_SPEED = 5.0f;
     private static final float RENDER_DISTANCE = 2000.0f;
 
     public Maze() {
@@ -37,13 +34,13 @@ public class Maze extends SimpleApplication implements ActionListener {
          * The maze itself should be a 2D array of MazeEntities
          * we can initialize which coordinates to pass into the entities
          */
-        MazeEntity mz = new WallEntity(3, 2);
+        MazeEntity mz = new WallEntity(50, 50);
         mz.renderObject(new Vector3f(0, 0, 0),
                         rootNode,
                         assetManager,
                         getPhysicsSpace());
 
-        OpenEntity oz = new OpenEntity(20, 20);
+        OpenEntity oz = new OpenEntity(100, 100);
         oz.renderObject(new Vector3f(0, 0, WallEntity.WALL_LENGTH),
                         rootNode,
                         assetManager,
@@ -90,22 +87,22 @@ public class Maze extends SimpleApplication implements ActionListener {
         }
 
         playerLoc = player.getPhysicsLocation();
-        playerLoc.setZ(playerLoc.getZ() + 0.2f);
         player.setWalkDirection(walkDirection.divide(PLAYER_SPEED));
-        cam.setLocation(playerLoc);
         flashLight1.setPosition(playerLoc);
         flashLight2.setPosition(playerLoc);
+        flashLightRim.setPosition(playerLoc);
         flashLight1.setDirection(camDir);
         flashLight2.setDirection(camDir);
         flashLightRim.setDirection(camDir);
-        flashLightRim.setDirection(camDir);
+        cam.setLocation(player.getPhysicsLocation());
     }
 
     private void initPlayer() {
-        flyCam.setMoveSpeed(1);
+        flyCam.setEnabled(true);
+
         cam.setFrustumFar(RENDER_DISTANCE);
 
-        player = new PhysicsCharacter(new SphereCollisionShape(1.0f), 1.0f);
+        player = new PhysicsCharacter(new SphereCollisionShape(5.0f), 0.1f);
 
         // disallow player jump
         player.setJumpSpeed(0);
@@ -117,7 +114,7 @@ public class Maze extends SimpleApplication implements ActionListener {
 
     private void initLight() {
         flashLight1 = new SpotLight();
-        flashLight1.setSpotRange(4);
+        flashLight1.setSpotRange(20);
         flashLight1.setSpotInnerAngle(0f * FastMath.DEG_TO_RAD);
         flashLight1.setSpotOuterAngle(60f * FastMath.DEG_TO_RAD);
         flashLight1.setColor(ColorRGBA.White.mult(1.5f));
@@ -126,7 +123,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         rootNode.addLight(flashLight1);
 
         flashLight2 = new SpotLight();
-        flashLight2.setSpotRange(5);
+        flashLight2.setSpotRange(25);
         flashLight2.setSpotInnerAngle(12f * FastMath.DEG_TO_RAD);
         flashLight2.setSpotOuterAngle(13f * FastMath.DEG_TO_RAD);
         flashLight2.setColor(ColorRGBA.Gray.mult(1.0f));
@@ -135,7 +132,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         rootNode.addLight(flashLight2);
 
         flashLightRim = new SpotLight();
-        flashLightRim.setSpotRange(4);
+        flashLightRim.setSpotRange(20);
         flashLightRim.setSpotInnerAngle(23f * FastMath.DEG_TO_RAD);
         flashLightRim.setSpotOuterAngle(24f * FastMath.DEG_TO_RAD);
         flashLightRim.setColor(ColorRGBA.Gray.mult(5f));
