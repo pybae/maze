@@ -5,6 +5,7 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.objects.PhysicsCharacter;
+import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -62,6 +63,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         initPlayer();
         initKeys();
         initLight();
+        initCrossHair();
 
         generateMaze();
     }
@@ -139,8 +141,17 @@ public class Maze extends SimpleApplication implements ActionListener {
         flashLightRim.setPosition(cam.getLocation());
         flashLightRim.setDirection(cam.getDirection());
         rootNode.addLight(flashLightRim);
+    }
 
-
+    private void initCrossHair(){
+        setDisplayStatView(false);
+        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+        BitmapText ch = new BitmapText(guiFont, false);
+        ch.setSize(guiFont.getCharSet().getRenderedSize()*2);
+        ch.setText("+");
+        ch.setLocalTranslation(settings.getWidth() / 2 - ch.getLineWidth()/2,
+            settings.getHeight() / 2 + ch.getLineHeight()/2, 0);
+        guiNode.attachChild(ch);
     }
 
     private void initKeys() {
