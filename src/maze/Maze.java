@@ -153,7 +153,9 @@ public class Maze extends SimpleApplication implements ActionListener {
         flashLight2.setDirection(camDir);
         flashLightRim.setDirection(camDir);
 
-        cam.setLocation(player.getPhysicsLocation());
+        Vector3f plLocation = player.getPhysicsLocation();
+        plLocation.setY(plLocation.getY() + 5f);
+        cam.setLocation(plLocation);
     }
 
     private void initPlayer() {
@@ -161,7 +163,7 @@ public class Maze extends SimpleApplication implements ActionListener {
 
         cam.setFrustumFar(RENDER_DISTANCE);
 
-        player = new PhysicsCharacter(new SphereCollisionShape(5.0f), 0.1f);
+        player = new PhysicsCharacter(new SphereCollisionShape(3.0f), 0.1f);
 
         // disallow player jump
         player.setJumpSpeed(0);
@@ -261,14 +263,25 @@ public class Maze extends SimpleApplication implements ActionListener {
 
             //collisions being stored in results
             doorNode.collideWith(ray, results);
-            wallNode.collideWith(ray, results);
-            openNode.collideWith(ray, results);
+            //wallNode.collideWith(ray, results);
+            //openNode.collideWith(ray, results);
 
             if(results.size() > 0){
                 CollisionResult closest = results.getClosestCollision();
 
                 String hit = closest.getGeometry().getName();
                 System.out.println("Pointer picked " + hit + ".");
+
+                float dist = closest.getDistance();
+                if(dist < 10f){
+                    System.out.println("Can perform an action.");
+                }
+                else{
+                    System.out.println("Too far.");
+                }
+            }
+            else{
+                System.out.println("Nothing.");
             }
         }
     }
