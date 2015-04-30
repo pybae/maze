@@ -135,17 +135,21 @@ public class Maze extends SimpleApplication implements ActionListener {
         walkDirection.set(0, 0, 0);
 
         if (lean && left) {
+          /*
             cam.lookAtDirection(camDir, new Vector3f(-.5f, 1, 0));
-            plLocation.setX(plLocation.getX() - 4f);
+            plLocation.setX(plLocation.getX() - 4f);*/
             cam.setLocation(plLocation);
+
         }
         else if (left) {
             walkDirection.addLocal(camLeft);
         }
         if (lean && right) {
+          /*
             cam.lookAtDirection(camDir, new Vector3f(.5f, 1, 0));
-            plLocation.setX(plLocation.getX() + 4f);
+            plLocation.setX(plLocation.getX() + 4f);*/
             cam.setLocation(plLocation);
+            
         }
         else if (right) {
             walkDirection.addLocal(camLeft.negate());
@@ -167,7 +171,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         flashLightRim.setDirection(camDir);
 
         if (!(lean && left) && !(lean && right)) {
-            cam.lookAtDirection(camDir, new Vector3f(0, 1, 0));
+            //cam.lookAtDirection(camDir, new Vector3f(0, 1, 0));
             cam.setLocation(plLocation);
         }
     }
