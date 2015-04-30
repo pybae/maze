@@ -6,6 +6,7 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
@@ -49,6 +50,7 @@ public class OpenEntity implements MazeEntity {
 
         Box b = new Box(width/2, FLOOR_HEIGHT/2, length/2);
         Geometry box = new Geometry("Box", b);
+        box.setShadowMode(ShadowMode.Receive);
         box.setLocalTranslation(new Vector3f(loc.x + width / 2,
                                              loc.y + FLOOR_HEIGHT / 2,
                                              loc.z + length / 2));

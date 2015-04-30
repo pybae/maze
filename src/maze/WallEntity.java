@@ -7,6 +7,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
@@ -53,7 +54,8 @@ public class WallEntity extends Maze implements MazeEntity {
 
         Box b = new Box(width/2, height/2, WALL_LENGTH / 2);
         Geometry box = new Geometry("Box", b);
-        //TangentBinormalGenerator.generate(b);
+        box.setShadowMode(ShadowMode.CastAndReceive);
+        TangentBinormalGenerator.generate(b);
         box.setLocalTranslation(new Vector3f(loc.x + width / 2,
                                              loc.y + height / 2,
                                              loc.z + WALL_LENGTH / 2));
@@ -64,11 +66,15 @@ public class WallEntity extends Maze implements MazeEntity {
         // This asset is a 3 by 2 texture (3000 x 2000) px
         mat.setTexture("DiffuseMap",
                        assetManager.loadTexture("Textures/Terrain/Wall/TheWall_d.jpg"));
+        //@Paul -> THESE bump maps, and specular maps are broken. Built in normal maps work however
+        //Bu,p maps arent supported need Normal maps
+        /*mat.setTexture("SpecularMap",
+                       assetManager.loadTexture("Textures/Terrain/Wall/TheWall_n.jpg"));*/
         mat.setBoolean("UseMaterialColors", true);
         mat.setColor("Diffuse", ColorRGBA.White);
         mat.setColor("Specular", ColorRGBA.White);
         //Shininess is broken with the flashlight
-        //mat.setFloat("Shininess", 10f);
+        mat.setFloat("Shininess", 0f);
         box.setMaterial(mat);
 
         rootNode.attachChild(box);

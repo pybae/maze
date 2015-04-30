@@ -14,8 +14,11 @@ import com.jme3.light.SpotLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
+import com.jme3.shadow.SpotLightShadowFilter;
+import com.jme3.shadow.SpotLightShadowRenderer;
 
 public class Maze extends SimpleApplication implements ActionListener {
 
@@ -26,6 +29,7 @@ public class Maze extends SimpleApplication implements ActionListener {
     private Vector3f walkDirection = new Vector3f(0, 0, 0);
     private static final float PLAYER_SPEED = 5.0f;
     private static final float RENDER_DISTANCE = 2000.0f;
+    private static final int SHADOWMAP_SIZE = 1024;
 
     public Maze() {
     }
@@ -36,17 +40,49 @@ public class Maze extends SimpleApplication implements ActionListener {
          * The maze itself should be a 2D array of MazeEntities
          * we can initialize which coordinates to pass into the entities
          */
-        MazeEntity mz = new WallEntity(50, 50);
+         //test Room
+        MazeEntity mz = new WallEntity(16, 16);
         mz.renderObject(new Vector3f(0, 0, 0),
                         rootNode,
                         assetManager,
                         getPhysicsSpace());
+        MazeEntity mz1 = new WallEntity(16, 16);
+        mz1.renderObject(new Vector3f(16, 0, 0),
+                        rootNode,
+                        assetManager,
+                        getPhysicsSpace());
+        MazeEntity mz2 = new WallEntity(16, 16);
+        mz2.renderObject(new Vector3f(0, 16, 0),
+                        rootNode,
+                        assetManager,
+                        getPhysicsSpace());
+        MazeEntity mz3 = new WallEntity(16, 16);
+        mz3.renderObject(new Vector3f(16, 16, 0),
+                        rootNode,
+                        assetManager,
+                        getPhysicsSpace());
 
-        OpenEntity oz = new OpenEntity(100, 100);
+        OpenEntity oz = new OpenEntity(16, 16);
         oz.renderObject(new Vector3f(0, 0, WallEntity.WALL_LENGTH),
                         rootNode,
                         assetManager,
                         getPhysicsSpace());
+        OpenEntity oz1 = new OpenEntity(16, 16);
+        oz1.renderObject(new Vector3f(16, 0, WallEntity.WALL_LENGTH),
+                        rootNode,
+                        assetManager,
+                        getPhysicsSpace());
+        OpenEntity oz2 = new OpenEntity(16, 16);
+        oz2.renderObject(new Vector3f(0, 0, 16 + WallEntity.WALL_LENGTH),
+                        rootNode,
+                        assetManager,
+                        getPhysicsSpace());
+        OpenEntity oz3 = new OpenEntity(16, 16);
+        oz3.renderObject(new Vector3f(16, 0, 16 + WallEntity.WALL_LENGTH),
+                        rootNode,
+                        assetManager,
+                        getPhysicsSpace());
+        //test Room
     }
 
     /**
@@ -93,9 +129,11 @@ public class Maze extends SimpleApplication implements ActionListener {
         flashLight1.setPosition(camLoc);
         flashLight2.setPosition(camLoc);
         flashLightRim.setPosition(camLoc);
+
         flashLight1.setDirection(camDir);
         flashLight2.setDirection(camDir);
         flashLightRim.setDirection(camDir);
+
         cam.setLocation(player.getPhysicsLocation());
     }
 
@@ -116,31 +154,50 @@ public class Maze extends SimpleApplication implements ActionListener {
 
     private void initLight() {
         flashLight1 = new SpotLight();
-        flashLight1.setSpotRange(20);
+        flashLight1.setSpotRange(32f);
         flashLight1.setSpotInnerAngle(0f * FastMath.DEG_TO_RAD);
-        flashLight1.setSpotOuterAngle(60f * FastMath.DEG_TO_RAD);
-        flashLight1.setColor(ColorRGBA.White.mult(2f));
+        flashLight1.setSpotOuterAngle(11f * FastMath.DEG_TO_RAD);
+        flashLight1.setColor(ColorRGBA.White.mult(1.5f));
         flashLight1.setPosition(cam.getLocation());
         flashLight1.setDirection(cam.getDirection());
         rootNode.addLight(flashLight1);
 
         flashLight2 = new SpotLight();
-        flashLight2.setSpotRange(25);
-        flashLight2.setSpotInnerAngle(12f * FastMath.DEG_TO_RAD);
-        flashLight2.setSpotOuterAngle(13f * FastMath.DEG_TO_RAD);
-        flashLight2.setColor(ColorRGBA.Gray.mult(0.75f));
+        flashLight2.setSpotRange(18f);
+        flashLight2.setSpotInnerAngle(25f * FastMath.DEG_TO_RAD);
+        flashLight2.setSpotOuterAngle(39f * FastMath.DEG_TO_RAD);
+        flashLight2.setColor(ColorRGBA.White.mult(1.25f));
         flashLight2.setPosition(cam.getLocation());
         flashLight2.setDirection(cam.getDirection());
         rootNode.addLight(flashLight2);
 
         flashLightRim = new SpotLight();
-        flashLightRim.setSpotRange(20);
+        flashLightRim.setSpotRange(24f);
         flashLightRim.setSpotInnerAngle(23f * FastMath.DEG_TO_RAD);
         flashLightRim.setSpotOuterAngle(24f * FastMath.DEG_TO_RAD);
         flashLightRim.setColor(ColorRGBA.Gray.mult(0.25f));
         flashLightRim.setPosition(cam.getLocation());
         flashLightRim.setDirection(cam.getDirection());
         rootNode.addLight(flashLightRim);
+
+        //Paul's Decision -> This is the Shadow Renderer however we have the
+        //SpotLight positioned right where the camera is looking so we will not
+        //generate any actual shadows therefore I leave it up to you to decide
+        //if we offset the lightsource by a bit and use shadows or not.
+        /*
+        SpotLightShadowRenderer slsr = new SpotLightShadowRenderer(assetManager,
+            SHADOWMAP_SIZE);
+        slsr.setLight(flashLight1);
+        viewPort.addProcessor(slsr);
+
+        SpotLightShadowFilter slsf = new SpotLightShadowFilter(assetManager,
+            SHADOWMAP_SIZE);
+        slsf.setLight(flashLight1);
+        slsf.setEnabled(true);
+        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+        fpp.addFilter(slsf);
+        viewPort.addProcessor(fpp);
+        */
     }
 
     private void initCrossHair(){
