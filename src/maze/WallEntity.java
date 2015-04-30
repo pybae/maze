@@ -22,8 +22,8 @@ public class WallEntity extends Maze implements MazeEntity {
     private float width;
     private float height;
     public static final float WALL_LENGTH = 0.1f;
-    public static final float TEXTURE_WIDTH = 30.0f;
-    public static final float TEXTURE_HEIGHT = 20.0f;
+    public static final float TEXTURE_WIDTH = 50.0f;
+    public static final float TEXTURE_HEIGHT = 30.0f;
 
 
     public WallEntity(float w, float h) {
@@ -65,11 +65,13 @@ public class WallEntity extends Maze implements MazeEntity {
 
         // This asset is a 3 by 2 texture (3000 x 2000) px
         mat.setTexture("DiffuseMap",
-                       assetManager.loadTexture("Textures/Terrain/Wall/TheWall_d.jpg"));
+                       assetManager.loadTexture("Textures/Terrain/Wall/moreBricks_d.jpg"));
         //@Paul -> THESE bump maps, and specular maps are broken. Built in normal maps work however
-        //Bu,p maps arent supported need Normal maps
-        /*mat.setTexture("SpecularMap",
-                       assetManager.loadTexture("Textures/Terrain/Wall/TheWall_n.jpg"));*/
+        //Bump maps arent supported need Normal maps
+        /*               
+        mat.setTexture("NormalMap",
+                       assetManager.loadTexture("Textures/Terrain/Wall/moreBricks_n.jpg"));
+        */            
         mat.setBoolean("UseMaterialColors", true);
         mat.setColor("Diffuse", ColorRGBA.White);
         mat.setColor("Specular", ColorRGBA.White);
