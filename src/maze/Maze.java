@@ -82,6 +82,12 @@ public class Maze extends SimpleApplication implements ActionListener {
                         rootNode,
                         assetManager,
                         getPhysicsSpace());
+
+        DoorEntity dz = new DoorEntity(16, 16);
+        dz.renderObject(new Vector3f(0, 0, 16),
+                        rootNode,
+                        assetManager,
+                        getPhysicsSpace());
         //test Room
     }
 
