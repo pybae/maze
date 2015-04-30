@@ -49,7 +49,7 @@ public class OpenEntity implements MazeEntity {
          */
 
         Box b = new Box(width/2, FLOOR_HEIGHT/2, length/2);
-        Geometry box = new Geometry("Box", b);
+        Geometry box = new Geometry("Open", b);
         box.setShadowMode(ShadowMode.Receive);
         box.setLocalTranslation(new Vector3f(loc.x + width / 2,
                                              loc.y + FLOOR_HEIGHT / 2,

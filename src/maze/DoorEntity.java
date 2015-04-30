@@ -45,7 +45,7 @@ public class DoorEntity implements MazeEntity {
                              PhysicsSpace physicsSpace){
         //temporary, until mouse picking and animation works
         Box b = new Box(width/2, height/2, DOOR_LENGTH / 2);
-        Geometry box = new Geometry("Box", b);
+        Geometry box = new Geometry("Door", b);
         box.setShadowMode(ShadowMode.CastAndReceive);
         box.setLocalTranslation(new Vector3f(loc.x + width / 2,
                                              loc.y + height / 2,

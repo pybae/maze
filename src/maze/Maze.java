@@ -5,14 +5,19 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.objects.PhysicsCharacter;
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.SpotLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.renderer.RenderManager;
@@ -23,6 +28,7 @@ import com.jme3.shadow.SpotLightShadowRenderer;
 public class Maze extends SimpleApplication implements ActionListener {
 
     private BulletAppState bulletAppState;
+    private Node doorNode, wallNode, openNode;
     private PhysicsCharacter player;
     private SpotLight flashLight1, flashLight2, flashLightRim;
     private boolean left, right, up, down;
@@ -43,49 +49,49 @@ public class Maze extends SimpleApplication implements ActionListener {
          //test Room
         MazeEntity mz = new WallEntity(16, 16);
         mz.renderObject(new Vector3f(0, 0, 0),
-                        rootNode,
+                        wallNode,
                         assetManager,
                         getPhysicsSpace());
         MazeEntity mz1 = new WallEntity(16, 16);
         mz1.renderObject(new Vector3f(16, 0, 0),
-                        rootNode,
+                        wallNode,
                         assetManager,
                         getPhysicsSpace());
         MazeEntity mz2 = new WallEntity(16, 16);
         mz2.renderObject(new Vector3f(0, 16, 0),
-                        rootNode,
+                        wallNode,
                         assetManager,
                         getPhysicsSpace());
         MazeEntity mz3 = new WallEntity(16, 16);
         mz3.renderObject(new Vector3f(16, 16, 0),
-                        rootNode,
+                        wallNode,
                         assetManager,
                         getPhysicsSpace());
 
         OpenEntity oz = new OpenEntity(16, 16);
         oz.renderObject(new Vector3f(0, 0, WallEntity.WALL_LENGTH),
-                        rootNode,
+                        openNode,
                         assetManager,
                         getPhysicsSpace());
         OpenEntity oz1 = new OpenEntity(16, 16);
         oz1.renderObject(new Vector3f(16, 0, WallEntity.WALL_LENGTH),
-                        rootNode,
+                        openNode,
                         assetManager,
                         getPhysicsSpace());
         OpenEntity oz2 = new OpenEntity(16, 16);
         oz2.renderObject(new Vector3f(0, 0, 16 + WallEntity.WALL_LENGTH),
-                        rootNode,
+                        openNode,
                         assetManager,
                         getPhysicsSpace());
         OpenEntity oz3 = new OpenEntity(16, 16);
         oz3.renderObject(new Vector3f(16, 0, 16 + WallEntity.WALL_LENGTH),
-                        rootNode,
+                        openNode,
                         assetManager,
                         getPhysicsSpace());
 
         DoorEntity dz = new DoorEntity(16, 16);
         dz.renderObject(new Vector3f(0, 0, 16),
-                        rootNode,
+                        doorNode,
                         assetManager,
                         getPhysicsSpace());
         //test Room
@@ -101,6 +107,13 @@ public class Maze extends SimpleApplication implements ActionListener {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
         bulletAppState.setDebugEnabled(false);
+
+        doorNode = new Node("Doors");
+        wallNode = new Node("Walls");
+        openNode = new Node("Floors");
+        rootNode.attachChild(doorNode);
+        rootNode.attachChild(wallNode);
+        rootNode.attachChild(openNode);
 
         initPlayer();
         initKeys();
@@ -222,10 +235,14 @@ public class Maze extends SimpleApplication implements ActionListener {
         inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
         inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
         inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
+        inputManager.addMapping("PointerAction",
+            new KeyTrigger(KeyInput.KEY_SPACE),
+            new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addListener(this, "Left");
         inputManager.addListener(this, "Right");
         inputManager.addListener(this, "Up");
         inputManager.addListener(this, "Down");
+        inputManager.addListener(this, "PointerAction");
     }
 
     public void onAction(String binding, boolean isPressed, float tpf) {
@@ -237,6 +254,22 @@ public class Maze extends SimpleApplication implements ActionListener {
             up = isPressed;
         } else if (binding.equals("Down")) {
             down = isPressed;
+        } else if (binding.equals("PointerAction") && !isPressed) {
+            //list of collisions from raycasting is stored in here
+            CollisionResults results = new CollisionResults();
+            Ray ray = new Ray(cam.getLocation(), cam.getDirection());
+
+            //collisions being stored in results
+            doorNode.collideWith(ray, results);
+            wallNode.collideWith(ray, results);
+            openNode.collideWith(ray, results);
+
+            if(results.size() > 0){
+                CollisionResult closest = results.getClosestCollision();
+
+                String hit = closest.getGeometry().getName();
+                System.out.println("Pointer picked " + hit + ".");
+            }
         }
     }
 

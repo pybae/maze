@@ -53,7 +53,7 @@ public class WallEntity extends Maze implements MazeEntity {
 
 
         Box b = new Box(width/2, height/2, WALL_LENGTH / 2);
-        Geometry box = new Geometry("Box", b);
+        Geometry box = new Geometry("Wall", b);
         box.setShadowMode(ShadowMode.CastAndReceive);
         TangentBinormalGenerator.generate(b);
         box.setLocalTranslation(new Vector3f(loc.x + width / 2,
@@ -68,10 +68,10 @@ public class WallEntity extends Maze implements MazeEntity {
                        assetManager.loadTexture("Textures/Terrain/Wall/moreBricks_d.jpg"));
         //@Paul -> THESE bump maps, and specular maps are broken. Built in normal maps work however
         //Bump maps arent supported need Normal maps
-        /*               
+        /*
         mat.setTexture("NormalMap",
                        assetManager.loadTexture("Textures/Terrain/Wall/moreBricks_n.jpg"));
-        */            
+        */
         mat.setBoolean("UseMaterialColors", true);
         mat.setColor("Diffuse", ColorRGBA.White);
         mat.setColor("Specular", ColorRGBA.White);
