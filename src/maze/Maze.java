@@ -36,7 +36,9 @@ public class Maze extends SimpleApplication implements ActionListener {
     private static final float PLAYER_SPEED = 5.0f;
     private static final float RENDER_DISTANCE = 2000.0f;
     private static final int SHADOWMAP_SIZE = 1024;
-
+    private MazeGenerator generator;
+    private MazeLayout layout;
+    
     public Maze() {
     }
 
@@ -96,8 +98,8 @@ public class Maze extends SimpleApplication implements ActionListener {
 //                        getPhysicsSpace());
         //test Room
         
-        MazeGenerator generator = new MazeGenerator(61, 41, 100, 2, 6, 20, 1);
-        MazeLayout layout = generator.generate();
+        generator = new MazeGenerator(61, 41, 100, 2, 6, 20, 1);
+        layout = generator.generate();
         layout.print();
         
         
@@ -209,12 +211,18 @@ public class Maze extends SimpleApplication implements ActionListener {
         cam.setFrustumFar(RENDER_DISTANCE);
         
         player = new PhysicsCharacter(new SphereCollisionShape(3.0f), 0.1f);
-
+        
         // disallow player jump
         player.setJumpSpeed(0);
         player.setFallSpeed(20);
         player.setGravity(30);
-        player.setPhysicsLocation(new Vector3f(5, 20, 5));
+        for(int r = 0; r < layout.maze.length; r++) {
+            for(int c = 0; c < layout.maze[0].length; c++) {
+                if(layout.maze[r][c] == State.OPEN) {
+                    player.setPhysicsLocation(new Vector3f(r, 15, c));
+                }
+            }
+        }
         getPhysicsSpace().add(player);
     }
 
