@@ -3,7 +3,7 @@ package maze;
 import java.util.*;
 
 public class MazeLayout {
-    private State[][] maze;
+    public State[][] maze;
 
     public MazeLayout(int w, int h) {
         maze = new State[h][w];

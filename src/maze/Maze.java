@@ -47,54 +47,82 @@ public class Maze extends SimpleApplication implements ActionListener {
          * we can initialize which coordinates to pass into the entities
          */
          //test Room
-        MazeEntity mz = new WallEntity(16, 16);
-        mz.renderObject(new Vector3f(0, 0, 0),
-                        wallNode,
-                        assetManager,
-                        getPhysicsSpace());
-        MazeEntity mz1 = new WallEntity(16, 16);
-        mz1.renderObject(new Vector3f(16, 0, 0),
-                        wallNode,
-                        assetManager,
-                        getPhysicsSpace());
-        MazeEntity mz2 = new WallEntity(16, 16);
-        mz2.renderObject(new Vector3f(0, 16, 0),
-                        wallNode,
-                        assetManager,
-                        getPhysicsSpace());
-        MazeEntity mz3 = new WallEntity(16, 16);
-        mz3.renderObject(new Vector3f(16, 16, 0),
-                        wallNode,
-                        assetManager,
-                        getPhysicsSpace());
-
+       MazeEntity mz = new WallEntity(16, 16);
+//        mz.renderObject(new Vector3f(0, 0, 0),
+//                        wallNode,
+//                        assetManager,
+//                        getPhysicsSpace());
+//        MazeEntity mz1 = new WallEntity(16, 16);
+//        mz1.renderObject(new Vector3f(16, 0, 0),
+//                        wallNode,
+//                        assetManager,
+//                        getPhysicsSpace());
+//        MazeEntity mz2 = new WallEntity(16, 16);
+//        mz2.renderObject(new Vector3f(0, 16, 0),
+//                        wallNode,
+//                        assetManager,
+//                        getPhysicsSpace());
+//        MazeEntity mz3 = new WallEntity(16, 16);
+//        mz3.renderObject(new Vector3f(16, 16, 0),
+//                        wallNode,
+//                        assetManager,
+//                        getPhysicsSpace());
+//
         OpenEntity oz = new OpenEntity(16, 16);
-        oz.renderObject(new Vector3f(0, 0, WallEntity.WALL_LENGTH),
-                        openNode,
-                        assetManager,
-                        getPhysicsSpace());
-        OpenEntity oz1 = new OpenEntity(16, 16);
-        oz1.renderObject(new Vector3f(16, 0, WallEntity.WALL_LENGTH),
-                        openNode,
-                        assetManager,
-                        getPhysicsSpace());
-        OpenEntity oz2 = new OpenEntity(16, 16);
-        oz2.renderObject(new Vector3f(0, 0, 16 + WallEntity.WALL_LENGTH),
-                        openNode,
-                        assetManager,
-                        getPhysicsSpace());
-        OpenEntity oz3 = new OpenEntity(16, 16);
-        oz3.renderObject(new Vector3f(16, 0, 16 + WallEntity.WALL_LENGTH),
-                        openNode,
-                        assetManager,
-                        getPhysicsSpace());
-
+//        oz.renderObject(new Vector3f(0, 0, WallEntity.WALL_LENGTH),
+//                        openNode,
+//                        assetManager,
+//                        getPhysicsSpace());
+//        OpenEntity oz1 = new OpenEntity(16, 16);
+//        oz1.renderObject(new Vector3f(16, 0, WallEntity.WALL_LENGTH),
+//                        openNode,
+//                        assetManager,
+//                        getPhysicsSpace());
+//        OpenEntity oz2 = new OpenEntity(16, 16);
+//        oz2.renderObject(new Vector3f(0, 0, 16 + WallEntity.WALL_LENGTH),
+//                        openNode,
+//                        assetManager,
+//                        getPhysicsSpace());
+//        OpenEntity oz3 = new OpenEntity(16, 16);
+//        oz3.renderObject(new Vector3f(16, 0, 16 + WallEntity.WALL_LENGTH),
+//                        openNode,
+//                        assetManager,
+//                        getPhysicsSpace());
+//
         DoorEntity dz = new DoorEntity(16, 16);
-        dz.renderObject(new Vector3f(0, 0, 16),
-                        doorNode,
+//        dz.renderObject(new Vector3f(0, 0, 16),
+//                        doorNode,
+//                        assetManager,
+//                        getPhysicsSpace());
+        //test Room
+        
+        MazeGenerator generator = new MazeGenerator(61, 41, 100, 2, 6, 20, 1);
+        MazeLayout layout = generator.generate();
+        layout.print();
+        
+        
+        for(int r = 0; r < layout.maze.length; r++) {
+            for(int c = 0; c < layout.maze[0].length; c++) {
+                if(layout.maze[r][c] == State.WALL) {
+                    //System.out.print("* ");
+                    mz.renderObject(new Vector3f(16*r, 0, 16*c),
+                        wallNode,
                         assetManager,
                         getPhysicsSpace());
-        //test Room
+                } else if(layout.maze[r][c] == State.DOOR) {
+                    //System.out.print("O ");
+                } else if(layout.maze[r][c] == State.NOT_SET) {
+                    //System.out.print("- ");
+                } else {
+                        oz.renderObject(new Vector3f(16*r, 0, 16*c),
+                        openNode,
+                        assetManager,
+                        getPhysicsSpace());
+                }
+            }
+            System.out.println();
+        }
+        
     }
 
     /**
@@ -115,12 +143,11 @@ public class Maze extends SimpleApplication implements ActionListener {
         rootNode.attachChild(wallNode);
         rootNode.attachChild(openNode);
 
+        generateMaze();
         initPlayer();
         initKeys();
         initLight();
         initCrossHair();
-
-        generateMaze();
     }
 
     @Override
@@ -180,14 +207,14 @@ public class Maze extends SimpleApplication implements ActionListener {
         flyCam.setEnabled(true);
 
         cam.setFrustumFar(RENDER_DISTANCE);
-
+        
         player = new PhysicsCharacter(new SphereCollisionShape(3.0f), 0.1f);
 
         // disallow player jump
         player.setJumpSpeed(0);
         player.setFallSpeed(20);
         player.setGravity(30);
-        player.setPhysicsLocation(new Vector3f(5, 5, 5));
+        player.setPhysicsLocation(new Vector3f(5, 20, 5));
         getPhysicsSpace().add(player);
     }
 

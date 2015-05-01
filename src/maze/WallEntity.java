@@ -21,7 +21,7 @@ import com.jme3.texture.Texture;
 public class WallEntity extends Maze implements MazeEntity {
     private float width;
     private float height;
-    public static final float WALL_LENGTH = 0.1f;
+    public static final float WALL_LENGTH = 16.0f;
     public static final float TEXTURE_WIDTH = 50.0f;
     public static final float TEXTURE_HEIGHT = 30.0f;
 

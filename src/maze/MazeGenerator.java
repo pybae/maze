@@ -46,8 +46,8 @@ public class MazeGenerator {
         rooms = new ArrayList<Rectangle>();
         regions = new int[height][width];
 
-        for(int r = 0; r < height; r++) {
-            for(int c = 0; c < width; c++) {
+        for(int r = 0; r < height; r+=1) {
+            for(int c = 0; c < width; c+=1) {
                 regions[r][c] = -1;
             }
         }
