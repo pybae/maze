@@ -50,9 +50,16 @@ public class OpenEntity implements MazeEntity {
 
         Box b = new Box(width/2, FLOOR_HEIGHT/2, length/2);
         Geometry box = new Geometry("Open", b);
+        Geometry ceiling = new Geometry("Roof", b);
+        
         box.setShadowMode(ShadowMode.Receive);
+        ceiling.setShadowMode(ShadowMode.Receive);
         box.setLocalTranslation(new Vector3f(loc.x + width / 2,
                                              loc.y + FLOOR_HEIGHT / 2,
+                                             loc.z + length / 2));
+        
+        ceiling.setLocalTranslation(new Vector3f(loc.x + width / 2,
+                                             loc.y + 16,
                                              loc.z + length / 2));
 
         Material mat = new Material(assetManager,
@@ -63,13 +70,21 @@ public class OpenEntity implements MazeEntity {
 
         box.getMesh().scaleTextureCoordinates(new Vector2f((float) Math.ceil(width / TEXTURE_WIDTH),
                                                            (float) Math.ceil(length / TEXTURE_LENGTH)));
+        ceiling.getMesh().scaleTextureCoordinates(new Vector2f((float) Math.ceil(width / TEXTURE_WIDTH),
+                                                           (float) Math.ceil(length / TEXTURE_LENGTH)));
 
         mat.setTexture("DiffuseMap", texture);
         box.setMaterial(mat);
+        ceiling.setMaterial(mat);
+        
         rootNode.attachChild(box);
+        rootNode.attachChild(ceiling);
 
         // make the object static
         box.addControl(new RigidBodyControl(0));
+        ceiling.addControl(new RigidBodyControl(0));
+       
         physicsSpace.addAll(box);
+        physicsSpace.addAll(ceiling);
     }
 }

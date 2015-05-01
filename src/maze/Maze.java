@@ -38,7 +38,8 @@ public class Maze extends SimpleApplication implements ActionListener {
     private static final int SHADOWMAP_SIZE = 1024;
     private MazeGenerator generator;
     private MazeLayout layout;
-    
+    private int spawnX;
+    private int spawnY;
     public Maze() {
     }
 
@@ -116,6 +117,9 @@ public class Maze extends SimpleApplication implements ActionListener {
                 } else if(layout.maze[r][c] == State.NOT_SET) {
                     //System.out.print("- ");
                 } else {
+                        spawnX = r;
+                        spawnY = c;
+
                         oz.renderObject(new Vector3f(16*r, 0, 16*c),
                         openNode,
                         assetManager,
@@ -215,13 +219,8 @@ public class Maze extends SimpleApplication implements ActionListener {
         // disallow player jump
         player.setJumpSpeed(0);
         player.setFallSpeed(20);
-        player.setGravity(30);
-        for(int r = 0; r < layout.maze.length; r++) {
-            for(int c = 0; c < layout.maze[0].length; c++) {
-                if(layout.maze[r][c] == State.OPEN) {
-                    player.setPhysicsLocation(new Vector3f(r, 15, c));
-                }
-            }
+        player.setGravity(30);{
+        player.setPhysicsLocation(new Vector3f(spawnX*16, 5, spawnY*16));
         }
         getPhysicsSpace().add(player);
     }
