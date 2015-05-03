@@ -31,8 +31,9 @@ public class Maze extends SimpleApplication implements ActionListener {
     private Node doorNode, wallNode, openNode;
     private PhysicsCharacter player;
     private SpotLight flashLight1, flashLight2, flashLightRim;
-    private boolean left, right, up, down, sprint;
+    private boolean left, right, up, down, sprint, optSprint;
     private float headBob = 0;
+    private float headSway = 0;
     private float lightSway = 0;
     private Vector3f walkDirection = new Vector3f(0, 0, 0);
     private static final float PLAYER_SPEED = 5.0f;
@@ -131,16 +132,20 @@ public class Maze extends SimpleApplication implements ActionListener {
         if (sprint) {
             if(headBob < 360){
                 headBob += 10*tpf;
-                plLocation.setY(plLocation.getY() + 0.5f*FastMath.sin(headBob));
+                headSway += 10*tpf;
+                plLocation.setY(plLocation.getY() + 0.3f*FastMath.sin(headBob));
+                plLocation.setX(plLocation.getX() + 0.1f*FastMath.sin(headSway));
             }
             else{
                 headBob = 0;
+                headSway = 0;
             }
             speed = PLAYER_SPRINT;
         }
         else {
             if(headBob != 0){
                 headBob = 0;
+                headSway = 0;
             }
         }
         if (left) {
@@ -296,8 +301,9 @@ public class Maze extends SimpleApplication implements ActionListener {
             down = isPressed;
         } else if (binding.equals("Sprint") && !isPressed) {
             sprint = false;
-        } else if (binding.equals("Sprint") && up) {
-            sprint = isPressed;
+            optSprint = false;
+        } else if (binding.equals("Sprint")) {
+            optSprint = isPressed;
         }
         else if (binding.equals("PointerAction") && !isPressed) {
             //list of collisions from raycasting is stored in here
@@ -326,6 +332,12 @@ public class Maze extends SimpleApplication implements ActionListener {
             else{
                 System.out.println("Nothing.");
             }
+        }
+        if (binding.equals("Up") && optSprint) {
+            sprint = isPressed;
+        }
+        if (binding.equals("Sprint") && up) {
+            sprint = isPressed;
         }
     }
 
