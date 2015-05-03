@@ -31,9 +31,12 @@ public class Maze extends SimpleApplication implements ActionListener {
     private Node doorNode, wallNode, openNode;
     private PhysicsCharacter player;
     private SpotLight flashLight1, flashLight2, flashLightRim;
-    private boolean left, right, up, down, lean;
+    private boolean left, right, up, down, sprint;
+    private float headBob = 0;
+    private float lightSway = 0;
     private Vector3f walkDirection = new Vector3f(0, 0, 0);
     private static final float PLAYER_SPEED = 5.0f;
+    private static final float PLAYER_SPRINT = 3.0f;
     private static final float RENDER_DISTANCE = 50.0f;
     private static final int SHADOWMAP_SIZE = 1024;
     private MazeGenerator generator;
@@ -118,30 +121,32 @@ public class Maze extends SimpleApplication implements ActionListener {
         Vector3f camDir = cam.getDirection();
         Vector3f camLeft = cam.getLeft();
         Vector3f camLoc = cam.getLocation();
+        float speed = PLAYER_SPEED;
 
         Vector3f plLocation = player.getPhysicsLocation();
         plLocation.setY(plLocation.getY() + 7f);
 
         walkDirection.set(0, 0, 0);
 
-        if (lean && left) {
-          /*
-            cam.lookAtDirection(camDir, new Vector3f(-.5f, 1, 0));
-            plLocation.setX(plLocation.getX() - 4f);*/
-            cam.setLocation(plLocation);
-
+        if (sprint) {
+            if(headBob < 360){
+                headBob += 10*tpf;
+                plLocation.setY(plLocation.getY() + 0.5f*FastMath.sin(headBob));
+            }
+            else{
+                headBob = 0;
+            }
+            speed = PLAYER_SPRINT;
         }
-        else if (left) {
+        else {
+            if(headBob != 0){
+                headBob = 0;
+            }
+        }
+        if (left) {
             walkDirection.addLocal(camLeft);
         }
-        if (lean && right) {
-          /*
-            cam.lookAtDirection(camDir, new Vector3f(.5f, 1, 0));
-            plLocation.setX(plLocation.getX() + 4f);*/
-            cam.setLocation(plLocation);
-
-        }
-        else if (right) {
+        if (right) {
             walkDirection.addLocal(camLeft.negate());
         }
         if (up) {
@@ -151,7 +156,7 @@ public class Maze extends SimpleApplication implements ActionListener {
             walkDirection.addLocal(camDir.negate());
         }
 
-        player.setWalkDirection(walkDirection.divide(PLAYER_SPEED));
+        player.setWalkDirection(walkDirection.divide(speed));
         flashLight1.setPosition(camLoc);
         flashLight2.setPosition(camLoc);
         flashLightRim.setPosition(camLoc);
@@ -160,10 +165,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         flashLight2.setDirection(camDir);
         flashLightRim.setDirection(camDir);
 
-        if (!(lean && left) && !(lean && right)) {
-            //cam.lookAtDirection(camDir, new Vector3f(0, 1, 0));
-            cam.setLocation(plLocation);
-        }
+        cam.setLocation(plLocation);
     }
 
     private void initPlayer() {
@@ -176,9 +178,8 @@ public class Maze extends SimpleApplication implements ActionListener {
         // disallow player jump
         player.setJumpSpeed(0);
         player.setFallSpeed(20);
-        player.setGravity(30);{
+        player.setGravity(30);
         player.setPhysicsLocation(new Vector3f(spawnX*16, 5, spawnY*16));
-        }
         getPhysicsSpace().add(player);
     }
 
@@ -263,7 +264,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
         inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
         inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
-        inputManager.addMapping("Lean", new KeyTrigger(KeyInput.KEY_LSHIFT));
+        inputManager.addMapping("Sprint", new KeyTrigger(KeyInput.KEY_LSHIFT));
         inputManager.addMapping("PointerAction",
             new KeyTrigger(KeyInput.KEY_SPACE),
             new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
@@ -271,22 +272,34 @@ public class Maze extends SimpleApplication implements ActionListener {
         inputManager.addListener(this, "Right");
         inputManager.addListener(this, "Up");
         inputManager.addListener(this, "Down");
-        inputManager.addListener(this, "Lean");
+        inputManager.addListener(this, "Sprint");
         inputManager.addListener(this, "PointerAction");
     }
 
     public void onAction(String binding, boolean isPressed, float tpf) {
-        if (binding.equals("Left")) {
+        if (binding.equals("Left") && !isPressed) {
+            left = false;
+        } else if (binding.equals("Left")) {
             left = isPressed;
+        } else if (binding.equals("Right") && !isPressed) {
+            right = false;
         } else if (binding.equals("Right")) {
             right = isPressed;
+        } else if (binding.equals("Up") && !isPressed) {
+            up = false;
+            sprint = false;
         } else if (binding.equals("Up")) {
             up = isPressed;
+        } else if (binding.equals("Down") && !isPressed) {
+            down = false;
         } else if (binding.equals("Down")) {
             down = isPressed;
-        } else if (binding.equals("Lean") && !up && !down) {
-            lean = isPressed;
-        } else if (binding.equals("PointerAction") && !isPressed) {
+        } else if (binding.equals("Sprint") && !isPressed) {
+            sprint = false;
+        } else if (binding.equals("Sprint") && up) {
+            sprint = isPressed;
+        }
+        else if (binding.equals("PointerAction") && !isPressed) {
             //list of collisions from raycasting is stored in here
             CollisionResults results = new CollisionResults();
             Ray ray = new Ray(cam.getLocation(), cam.getDirection());
