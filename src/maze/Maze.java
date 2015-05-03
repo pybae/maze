@@ -34,7 +34,7 @@ public class Maze extends SimpleApplication implements ActionListener {
     private boolean left, right, up, down, lean;
     private Vector3f walkDirection = new Vector3f(0, 0, 0);
     private static final float PLAYER_SPEED = 5.0f;
-    private static final float RENDER_DISTANCE = 2000.0f;
+    private static final float RENDER_DISTANCE = 50.0f;
     private static final int SHADOWMAP_SIZE = 1024;
     private MazeGenerator generator;
     private MazeLayout layout;
@@ -51,71 +51,28 @@ public class Maze extends SimpleApplication implements ActionListener {
          */
          //test Room
        MazeEntity mz = new WallEntity(16, 16);
-//        mz.renderObject(new Vector3f(0, 0, 0),
-//                        wallNode,
-//                        assetManager,
-//                        getPhysicsSpace());
-//        MazeEntity mz1 = new WallEntity(16, 16);
-//        mz1.renderObject(new Vector3f(16, 0, 0),
-//                        wallNode,
-//                        assetManager,
-//                        getPhysicsSpace());
-//        MazeEntity mz2 = new WallEntity(16, 16);
-//        mz2.renderObject(new Vector3f(0, 16, 0),
-//                        wallNode,
-//                        assetManager,
-//                        getPhysicsSpace());
-//        MazeEntity mz3 = new WallEntity(16, 16);
-//        mz3.renderObject(new Vector3f(16, 16, 0),
-//                        wallNode,
-//                        assetManager,
-//                        getPhysicsSpace());
-//
-        OpenEntity oz = new OpenEntity(16, 16);
-//        oz.renderObject(new Vector3f(0, 0, WallEntity.WALL_LENGTH),
-//                        openNode,
-//                        assetManager,
-//                        getPhysicsSpace());
-//        OpenEntity oz1 = new OpenEntity(16, 16);
-//        oz1.renderObject(new Vector3f(16, 0, WallEntity.WALL_LENGTH),
-//                        openNode,
-//                        assetManager,
-//                        getPhysicsSpace());
-//        OpenEntity oz2 = new OpenEntity(16, 16);
-//        oz2.renderObject(new Vector3f(0, 0, 16 + WallEntity.WALL_LENGTH),
-//                        openNode,
-//                        assetManager,
-//                        getPhysicsSpace());
-//        OpenEntity oz3 = new OpenEntity(16, 16);
-//        oz3.renderObject(new Vector3f(16, 0, 16 + WallEntity.WALL_LENGTH),
-//                        openNode,
-//                        assetManager,
-//                        getPhysicsSpace());
-//
-        DoorEntity dz = new DoorEntity(16, 16);
+       OpenEntity oz = new OpenEntity(16, 16);
+       DoorEntity dz = new DoorEntity(16, 16);
 //        dz.renderObject(new Vector3f(0, 0, 16),
 //                        doorNode,
 //                        assetManager,
 //                        getPhysicsSpace());
         //test Room
-        
+
         generator = new MazeGenerator(61, 41, 100, 2, 6, 20, 1);
         layout = generator.generate();
         layout.print();
-        
-        
+
+
         for(int r = 0; r < layout.maze.length; r++) {
             for(int c = 0; c < layout.maze[0].length; c++) {
                 if(layout.maze[r][c] == State.WALL) {
-                    //System.out.print("* ");
                     mz.renderObject(new Vector3f(16*r, 0, 16*c),
                         wallNode,
                         assetManager,
                         getPhysicsSpace());
                 } else if(layout.maze[r][c] == State.DOOR) {
-                    //System.out.print("O ");
                 } else if(layout.maze[r][c] == State.NOT_SET) {
-                    //System.out.print("- ");
                 } else {
                         spawnX = r;
                         spawnY = c;
@@ -128,7 +85,7 @@ public class Maze extends SimpleApplication implements ActionListener {
             }
             System.out.println();
         }
-        
+
     }
 
     /**
@@ -182,7 +139,7 @@ public class Maze extends SimpleApplication implements ActionListener {
             cam.lookAtDirection(camDir, new Vector3f(.5f, 1, 0));
             plLocation.setX(plLocation.getX() + 4f);*/
             cam.setLocation(plLocation);
-            
+
         }
         else if (right) {
             walkDirection.addLocal(camLeft.negate());
@@ -213,9 +170,9 @@ public class Maze extends SimpleApplication implements ActionListener {
         flyCam.setEnabled(true);
 
         cam.setFrustumFar(RENDER_DISTANCE);
-        
+
         player = new PhysicsCharacter(new SphereCollisionShape(3.0f), 0.1f);
-        
+
         // disallow player jump
         player.setJumpSpeed(0);
         player.setFallSpeed(20);
@@ -227,50 +184,67 @@ public class Maze extends SimpleApplication implements ActionListener {
 
     private void initLight() {
         flashLight1 = new SpotLight();
-        flashLight1.setSpotRange(32f);
+        flashLight1.setSpotRange(38f);
         flashLight1.setSpotInnerAngle(0f * FastMath.DEG_TO_RAD);
-        flashLight1.setSpotOuterAngle(11f * FastMath.DEG_TO_RAD);
+        flashLight1.setSpotOuterAngle(8f * FastMath.DEG_TO_RAD);
         flashLight1.setColor(ColorRGBA.White.mult(1.5f));
         flashLight1.setPosition(cam.getLocation());
         flashLight1.setDirection(cam.getDirection());
         rootNode.addLight(flashLight1);
 
         flashLight2 = new SpotLight();
-        flashLight2.setSpotRange(18f);
+        flashLight2.setSpotRange(30f);
         flashLight2.setSpotInnerAngle(25f * FastMath.DEG_TO_RAD);
-        flashLight2.setSpotOuterAngle(39f * FastMath.DEG_TO_RAD);
+        flashLight2.setSpotOuterAngle(34f * FastMath.DEG_TO_RAD);
         flashLight2.setColor(ColorRGBA.White.mult(1.25f));
         flashLight2.setPosition(cam.getLocation());
         flashLight2.setDirection(cam.getDirection());
         rootNode.addLight(flashLight2);
 
         flashLightRim = new SpotLight();
-        flashLightRim.setSpotRange(24f);
+        flashLightRim.setSpotRange(32f);
         flashLightRim.setSpotInnerAngle(23f * FastMath.DEG_TO_RAD);
         flashLightRim.setSpotOuterAngle(24f * FastMath.DEG_TO_RAD);
-        flashLightRim.setColor(ColorRGBA.Gray.mult(0.25f));
+        flashLightRim.setColor(ColorRGBA.Gray.mult(0.375f));
         flashLightRim.setPosition(cam.getLocation());
         flashLightRim.setDirection(cam.getDirection());
         rootNode.addLight(flashLightRim);
 
-        //Paul's Decision -> This is the Shadow Renderer however we have the
-        //SpotLight positioned right where the camera is looking so we will not
-        //generate any actual shadows therefore I leave it up to you to decide
-        //if we offset the lightsource by a bit and use shadows or not.
-        /*
-        SpotLightShadowRenderer slsr = new SpotLightShadowRenderer(assetManager,
+        SpotLightShadowRenderer slsr1 = new SpotLightShadowRenderer(assetManager,
             SHADOWMAP_SIZE);
-        slsr.setLight(flashLight1);
-        viewPort.addProcessor(slsr);
+        slsr1.setLight(flashLight1);
+        viewPort.addProcessor(slsr1);
+        SpotLightShadowFilter slsf1 = new SpotLightShadowFilter(assetManager,
+            SHADOWMAP_SIZE);
+        slsf1.setLight(flashLight1);
+        slsf1.setEnabled(true);
+        FilterPostProcessor fpp1 = new FilterPostProcessor(assetManager);
+        fpp1.addFilter(slsf1);
+        viewPort.addProcessor(fpp1);
 
-        SpotLightShadowFilter slsf = new SpotLightShadowFilter(assetManager,
+        SpotLightShadowRenderer slsr2 = new SpotLightShadowRenderer(assetManager,
             SHADOWMAP_SIZE);
-        slsf.setLight(flashLight1);
-        slsf.setEnabled(true);
-        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
-        fpp.addFilter(slsf);
-        viewPort.addProcessor(fpp);
-        */
+        slsr2.setLight(flashLight2);
+        viewPort.addProcessor(slsr2);
+        SpotLightShadowFilter slsf2 = new SpotLightShadowFilter(assetManager,
+            SHADOWMAP_SIZE);
+        slsf2.setLight(flashLight2);
+        slsf2.setEnabled(true);
+        FilterPostProcessor fpp2 = new FilterPostProcessor(assetManager);
+        fpp2.addFilter(slsf2);
+        viewPort.addProcessor(fpp2);
+
+        SpotLightShadowRenderer slsrRim = new SpotLightShadowRenderer(assetManager,
+            SHADOWMAP_SIZE);
+        slsrRim.setLight(flashLightRim);
+        viewPort.addProcessor(slsrRim);
+        SpotLightShadowFilter slsfRim = new SpotLightShadowFilter(assetManager,
+            SHADOWMAP_SIZE);
+        slsfRim.setLight(flashLightRim);
+        slsfRim.setEnabled(true);
+        FilterPostProcessor fppRim = new FilterPostProcessor(assetManager);
+        fppRim.addFilter(slsfRim);
+        viewPort.addProcessor(fppRim);
     }
 
     private void initCrossHair(){
