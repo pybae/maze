@@ -122,6 +122,32 @@ public class MazeGenerator {
         for(int i = 0; i < MAX_ADD_ROOMS_TRIES; i++) {
             rooms.clear();
 
+            int startSize = 5;
+            int startX = width / 2 - startSize / 2 + 1;
+            int startY = height / 2 - startSize / 2 + 1;
+
+            Rectangle start = new Rectangle(startX, startY, startSize, startSize);
+
+            rooms.add(start);
+
+            startRegion();
+
+            for(int r = startY; r < startY + startSize; r++) {
+                for(int c = startX; c < startX + startSize; c++) {
+                    carve(m, new Position(r, c), State.OPEN);
+                }
+            }
+
+            // encircle the room with walls
+            for(int r = startY - 1; r < startY + startSize + 1; r++) {
+                carve(m, new Position(r, startX - 1), State.WALL);
+                carve(m, new Position(r, startX + startSize), State.WALL);
+            }
+            for(int c = startX - 1; c < startX + startSize + 1; c++) {
+                carve(m, new Position(startY - 1, c), State.WALL);
+                carve(m, new Position(startY + startSize, c), State.WALL);
+            }
+
             for(int j = 0; j < roomTries; j++) {
                 Random rand = new Random();
 
