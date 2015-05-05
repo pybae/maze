@@ -136,19 +136,19 @@ public class Maze extends SimpleApplication implements ActionListener {
         if (sprint) {
             if(headBob < 360){
                 headBob += 10*tpf;
-                plLocation.setY(plLocation.getY() + 0.2f*FastMath.sin(headBob));
-                plLocation.setX(plLocation.getX() + 0.1f*FastMath.sin(headBob));
+                //plLocation.setY(plLocation.getY() + 0.2f*FastMath.sin(headBob));
+                //plLocation.setX(plLocation.getX() + 0.1f*FastMath.sin(headBob));
             }
             else{
                 headBob = 0;
             }
             if(lightSway < 360){
                 lightSway += 7*tpf;
-                lightDir.setY(lightDir.getY() + 0.025f*FastMath.sin(lightSway));
+                //lightDir.setY(lightDir.getY() + 0.025f*FastMath.sin(lightSway));
                 //lightDir.setX(lightDir.getX() + 0.05f*FastMath.sin(lightSway));
-                flashLight1.setColor(ColorRGBA.White.mult(lightInt1 + 0.5f*FastMath.sin(lightSway)));
-                flashLight2.setColor(ColorRGBA.White.mult(lightInt2 + 0.375f*FastMath.sin(lightSway)));
-                flashLightRim.setColor(ColorRGBA.Gray.mult(lightIntRim + 0.125f*FastMath.sin(lightSway)));
+                //flashLight1.setColor(ColorRGBA.White.mult(lightInt1 + 0.5f*FastMath.sin(lightSway)));
+                //flashLight2.setColor(ColorRGBA.White.mult(lightInt2 + 0.375f*FastMath.sin(lightSway)));
+                //flashLightRim.setColor(ColorRGBA.Gray.mult(lightIntRim + 0.125f*FastMath.sin(lightSway)));
             }
             else{
                 lightSway = 0;
@@ -162,9 +162,9 @@ public class Maze extends SimpleApplication implements ActionListener {
             if(lightSway != 0){
                 lightSway = 0;
             }
-            flashLight1.setColor(ColorRGBA.White.mult(lightInt1));
-            flashLight2.setColor(ColorRGBA.White.mult(lightInt2));
-            flashLightRim.setColor(ColorRGBA.Gray.mult(lightIntRim));
+            //flashLight1.setColor(ColorRGBA.White.mult(lightInt1));
+            //flashLight2.setColor(ColorRGBA.White.mult(lightInt2));
+            //flashLightRim.setColor(ColorRGBA.Gray.mult(lightIntRim));
         }
         if (left) {
             walkDirection.addLocal(camLeft);

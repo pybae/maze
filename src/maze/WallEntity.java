@@ -66,17 +66,15 @@ public class WallEntity extends Maze implements MazeEntity {
         // This asset is a 3 by 2 texture (3000 x 2000) px
         mat.setTexture("DiffuseMap",
                        assetManager.loadTexture("Textures/Terrain/Wall/moreBricks_d.jpg"));
-        //@Paul -> THESE bump maps, and specular maps are broken. Built in normal maps work however
-        //Bump maps arent supported need Normal maps
-        /*
+
         mat.setTexture("NormalMap",
-                       assetManager.loadTexture("Textures/Terrain/Wall/moreBricks_n.jpg"));
-        */
+                       assetManager.loadTexture("Textures/Terrain/Wall/moreBricks_n.png"));
+
         mat.setBoolean("UseMaterialColors", true);
         mat.setColor("Diffuse", ColorRGBA.White);
         mat.setColor("Specular", ColorRGBA.White);
         //Shininess is broken with the flashlight
-        mat.setFloat("Shininess", 0f);
+        mat.setFloat("Shininess", 0.1f);
         box.setMaterial(mat);
 
         rootNode.attachChild(box);
