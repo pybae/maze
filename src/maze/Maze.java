@@ -21,9 +21,20 @@ public class Maze extends SimpleApplication implements ActionListener {
     private BulletAppState bulletAppState;
     private Node doorNode, wallNode, openNode;
     private Player player;
-    private static final float RENDER_DISTANCE = 50.0f;
     private MazeGenerator generator;
     private MazeLayout layout;
+
+
+    // note that the width and height must be odd
+    public static final int MAZE_WIDTH = 61;
+    public static final int MAZE_HEIGHT = 61;
+    public static final int MAZE_WINDINESS = 100;
+    public static final int MIN_ROOM_SIZE = 2;
+    public static final int MAX_ROOM_SIZE = 6;
+    public static final int MAX_ROOM_TRIES = 20;
+    public static final int MIN_ROOMS = 1;
+
+    public static final float RENDER_DISTANCE = 50.0f;
 
     public Maze() {
     }
@@ -38,7 +49,14 @@ public class Maze extends SimpleApplication implements ActionListener {
         OpenEntity oz = new OpenEntity(16, 16);
         DoorEntity dz = new DoorEntity(16, 16);
 
-        generator = new MazeGenerator(61, 41, 100, 2, 6, 20, 1);
+        generator = new MazeGenerator(MAZE_WIDTH,
+                                      MAZE_HEIGHT,
+                                      MAZE_WINDINESS,
+                                      MIN_ROOM_SIZE,
+                                      MAX_ROOM_SIZE,
+                                      MAX_ROOM_TRIES,
+                                      MIN_ROOMS);
+
         layout = generator.generate();
         layout.print();
 
@@ -101,7 +119,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         player = new Player(rootNode, assetManager, cam, getPhysicsSpace(), viewPort);
 
         // for now, set the player spawn to the center of the maze
-        player.setSpawn(30, 20);
+        player.setSpawn(30*16, 20*16);
     }
 
     private void initCrossHair(){
@@ -134,6 +152,7 @@ public class Maze extends SimpleApplication implements ActionListener {
 
     public void onAction(String binding, boolean isPressed, float tpf) {
         if (!player.onAction(binding, isPressed, tpf)) {
+            // the binding is not taken care of by the player
             if (binding.equals("PointerAction") && !isPressed) {
                 // list of collisions from raycasting is stored in here
                 CollisionResults results = new CollisionResults();
