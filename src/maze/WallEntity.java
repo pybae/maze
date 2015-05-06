@@ -73,7 +73,6 @@ public class WallEntity extends Maze implements MazeEntity {
         mat.setBoolean("UseMaterialColors", true);
         mat.setColor("Diffuse", ColorRGBA.White);
         mat.setColor("Specular", ColorRGBA.White);
-        //Shininess is broken with the flashlight
         mat.setFloat("Shininess", 0.1f);
         box.setMaterial(mat);
 
