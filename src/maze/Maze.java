@@ -30,9 +30,9 @@ public class Maze extends SimpleApplication implements ActionListener {
     private Node doorNode, wallNode, openNode;
     private PhysicsCharacter player;
     private SpotLight flashLight1, flashLight2, flashLightRim;
-    private float lightInt1 = 0.1f;
-    private float lightInt2 = 0.5f;
-    private float lightIntRim = 0.375f;
+    private float lightInt1 = 0.95f;
+    private float lightInt2 = 0.315f;
+    private float lightIntRim = 0.30f;
     private boolean left, right, up, down, sprint, optSprint;
     private float headBob = 0;
     private float headSway = 0;
@@ -146,9 +146,9 @@ public class Maze extends SimpleApplication implements ActionListener {
                 lightSway += 7*tpf;
                 lightDir.setY(lightDir.getY() + 0.025f*FastMath.sin(lightSway));
                 //lightDir.setX(lightDir.getX() + 0.05f*FastMath.sin(lightSway));
-                flashLight1.setColor(ColorRGBA.White.mult(lightInt1 + 0.3f*FastMath.sin(lightSway)));
-                flashLight2.setColor(ColorRGBA.White.mult(lightInt2 + 0.375f*FastMath.sin(lightSway)));
-                flashLightRim.setColor(ColorRGBA.White.mult(lightIntRim + 0.125f*FastMath.sin(lightSway)));
+                flashLight1.setColor(ColorRGBA.White.mult(lightInt1 + 0.2f*FastMath.sin(lightSway)));
+                flashLight2.setColor(ColorRGBA.Orange.mult(lightInt2 + 0.1f*FastMath.sin(lightSway)));
+                flashLightRim.setColor(ColorRGBA.Gray.mult(lightIntRim + 0.2f*FastMath.sin(lightSway)));
             }
             else{
                 lightSway = 0;
@@ -163,8 +163,8 @@ public class Maze extends SimpleApplication implements ActionListener {
                 lightSway = 0;
             }
             flashLight1.setColor(ColorRGBA.White.mult(lightInt1));
-            flashLight2.setColor(ColorRGBA.White.mult(lightInt2));
-            flashLightRim.setColor(ColorRGBA.White.mult(lightIntRim));
+            flashLight2.setColor(ColorRGBA.Orange.mult(lightInt2));
+            flashLightRim.setColor(ColorRGBA.Gray.mult(lightIntRim));
         }
         if (left) {
             walkDirection.addLocal(camLeft);
@@ -178,6 +178,9 @@ public class Maze extends SimpleApplication implements ActionListener {
         if (down) {
             walkDirection.addLocal(camDir.negate());
         }
+
+        walkDirection.setY(0);
+
 
         player.setWalkDirection(walkDirection.divide(speed));
         flashLight1.setPosition(camLoc);
@@ -208,7 +211,7 @@ public class Maze extends SimpleApplication implements ActionListener {
 
     private void initLight() {
         flashLight1 = new SpotLight();
-        flashLight1.setSpotRange(38);
+        flashLight1.setSpotRange(32);
         flashLight1.setSpotInnerAngle(0f * FastMath.DEG_TO_RAD);
         flashLight1.setSpotOuterAngle(36f * FastMath.DEG_TO_RAD);
         flashLight1.setColor(ColorRGBA.White.mult(lightInt1));
@@ -217,19 +220,19 @@ public class Maze extends SimpleApplication implements ActionListener {
         rootNode.addLight(flashLight1);
 
         flashLight2 = new SpotLight();
-        flashLight2.setSpotRange(30);
-        flashLight2.setSpotInnerAngle(25f * FastMath.DEG_TO_RAD);
+        flashLight2.setSpotRange(38);
+        flashLight2.setSpotInnerAngle(32f * FastMath.DEG_TO_RAD);
         flashLight2.setSpotOuterAngle(36f * FastMath.DEG_TO_RAD);
-        flashLight2.setColor(ColorRGBA.White.mult(lightInt2));
+        flashLight2.setColor(ColorRGBA.Orange.mult(lightInt2));
         flashLight2.setPosition(cam.getLocation());
         flashLight2.setDirection(cam.getDirection());
         rootNode.addLight(flashLight2);
 
         flashLightRim = new SpotLight();
-        flashLightRim.setSpotRange(40);
-        flashLightRim.setSpotInnerAngle(28f * FastMath.DEG_TO_RAD);
-        flashLightRim.setSpotOuterAngle(66f * FastMath.DEG_TO_RAD);
-        flashLightRim.setColor(ColorRGBA.White.mult(lightIntRim));
+        flashLightRim.setSpotRange(28);
+        flashLightRim.setSpotInnerAngle(33f * FastMath.DEG_TO_RAD);
+        flashLightRim.setSpotOuterAngle(36f * FastMath.DEG_TO_RAD);
+        flashLightRim.setColor(ColorRGBA.Gray.mult(lightIntRim));
         flashLightRim.setPosition(cam.getLocation());
         flashLightRim.setDirection(cam.getDirection());
         rootNode.addLight(flashLightRim);
