@@ -11,6 +11,8 @@ import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.light.AmbientLight;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -40,11 +42,6 @@ public class Maze extends SimpleApplication implements ActionListener {
     }
 
     public void generateMaze() {
-        /** @zane
-         * you can write the implementation for generating the Maze here.
-         * The maze itself should be a 2D array of MazeEntities
-         * we can initialize which coordinates to pass into the entities
-         */
         MazeEntity mz = new WallEntity(16, 16);
         OpenEntity oz = new OpenEntity(16, 16);
         DoorEntity dz = new DoorEntity(16, 16);
@@ -100,16 +97,30 @@ public class Maze extends SimpleApplication implements ActionListener {
         rootNode.attachChild(wallNode);
         rootNode.attachChild(openNode);
 
-        initPlayer();
         initKeys();
         initCrossHair();
 
         generateMaze();
+
+        initPlayer();
+        initMobs();
     }
 
     @Override
     public void simpleUpdate(float tpf) {
         player.update(tpf);
+    }
+
+    private void initMobs() {
+        AmbientLight al = new AmbientLight();
+        al.setColor(ColorRGBA.White.mult(1.3f));
+        rootNode.addLight(al);
+
+        Node golemNode = new Node("Golems");
+        rootNode.attachChild(golemNode);
+
+        Golem golem = new Golem(golemNode, assetManager, player, getPhysicsSpace());
+        golem.setPosition(30*16, 21*16);
     }
 
     private void initPlayer() {
