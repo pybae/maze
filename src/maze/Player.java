@@ -4,6 +4,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.objects.PhysicsCharacter;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.SpotLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -37,9 +38,9 @@ public class Player {
     private float headBob = 0;
     private float lightSway = 0;
 
-    public static final float flashlightInnerIntensity = 0.95f;
-    public static final float flashlightMiddleIntensity = 0.315f;
-    public static final float flashlightOuterIntensity = 0.30f;
+    public static final float flashlightInnerIntensity = 1.5f;
+    public static final float flashlightMiddleIntensity = 1.25f;
+    public static final float flashlightOuterIntensity = 0.375f;
 
     private static final float PLAYER_SPEED = 5.0f;
     private static final float PLAYER_SPRINT = 3.0f;
@@ -82,20 +83,21 @@ public class Player {
         flashlightInner = new SpotLight();
         flashlightInner.setSpotRange(32);
         flashlightInner.setSpotInnerAngle(0f * FastMath.DEG_TO_RAD);
-        flashlightInner.setSpotOuterAngle(64f * FastMath.DEG_TO_RAD);
+        flashlightInner.setSpotOuterAngle(8f * FastMath.DEG_TO_RAD);
         flashlightInner.setColor(ColorRGBA.White.mult(flashlightInnerIntensity));
         rootNode.addLight(flashlightInner);
 
         flashlightMiddle = new SpotLight();
         flashlightMiddle.setSpotRange(38);
-        flashlightMiddle.setSpotInnerAngle(32f * FastMath.DEG_TO_RAD);
-        flashlightMiddle.setSpotOuterAngle(64f * FastMath.DEG_TO_RAD);
+        flashlightMiddle.setSpotInnerAngle(25f * FastMath.DEG_TO_RAD);
+        flashlightMiddle.setSpotOuterAngle(34f * FastMath.DEG_TO_RAD);
         flashlightMiddle.setColor(ColorRGBA.Orange.mult(flashlightMiddleIntensity));
         rootNode.addLight(flashlightMiddle);
+
         flashlightOuter = new SpotLight();
         flashlightOuter.setSpotRange(28);
-        flashlightOuter.setSpotInnerAngle(33f * FastMath.DEG_TO_RAD);
-        flashlightOuter.setSpotOuterAngle(64f * FastMath.DEG_TO_RAD);
+        flashlightOuter.setSpotInnerAngle(20f * FastMath.DEG_TO_RAD);
+        flashlightOuter.setSpotOuterAngle(22f * FastMath.DEG_TO_RAD);
         flashlightOuter.setColor(ColorRGBA.Gray.mult(flashlightOuterIntensity));
         rootNode.addLight(flashlightOuter);
 

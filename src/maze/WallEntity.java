@@ -70,10 +70,9 @@ public class WallEntity extends Maze implements MazeEntity {
         mat.setTexture("NormalMap",
                        assetManager.loadTexture("Textures/Terrain/Wall/moreBricks_n.png"));
 
-        mat.setBoolean("UseMaterialColors", true);
         mat.setColor("Diffuse", ColorRGBA.White);
         mat.setColor("Specular", ColorRGBA.White);
-        mat.setFloat("Shininess", 0.1f);
+        mat.setFloat("Shininess", 1f);
         box.setMaterial(mat);
 
         rootNode.attachChild(box);

@@ -89,16 +89,16 @@ public class OpenEntity implements MazeEntity {
 
         mat.setTexture("DiffuseMap", texture);
         mat.setTexture("NormalMap", bTexture);
-        mat.setBoolean("UseMaterialColors", true);
         mat.setColor("Diffuse", ColorRGBA.White);
         mat.setColor("Specular", ColorRGBA.White);
-        mat.setFloat("Shininess", 0.1f);
+        mat.setFloat("Shininess", 1f);
+
         mat2.setTexture("DiffuseMap", texture2);
         mat2.setTexture("NormalMap", bTexture2);
-        mat2.setBoolean("UseMaterialColors", true);
         mat2.setColor("Diffuse", ColorRGBA.White);
         mat2.setColor("Specular", ColorRGBA.White);
-        mat2.setFloat("Shininess", 0.1f);
+        mat2.setFloat("Shininess", 1f);
+
         box.setMaterial(mat);
         ceiling.setMaterial(mat2);
 
