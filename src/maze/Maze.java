@@ -23,6 +23,7 @@ public class Maze extends SimpleApplication implements ActionListener {
     private BulletAppState bulletAppState;
     private Node doorNode, wallNode, openNode;
     private Player player;
+    private Golem golem;
     private MazeGenerator generator;
     private MazeLayout layout;
 
@@ -109,17 +110,18 @@ public class Maze extends SimpleApplication implements ActionListener {
     @Override
     public void simpleUpdate(float tpf) {
         player.update(tpf);
+        golem.update(tpf);
     }
 
     private void initMobs() {
-        AmbientLight al = new AmbientLight();
-        al.setColor(ColorRGBA.White.mult(1.3f));
-        rootNode.addLight(al);
+        // AmbientLight al = new AmbientLight();
+        // al.setColor(ColorRGBA.White.mult(1.3f));
+        // rootNode.addLight(al);
 
         Node golemNode = new Node("Golems");
         rootNode.attachChild(golemNode);
 
-        Golem golem = new Golem(golemNode, assetManager, player, getPhysicsSpace());
+        golem = new Golem(golemNode, assetManager, player, getPhysicsSpace());
         golem.setPosition(30*16, 21*16);
     }
 

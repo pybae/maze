@@ -40,11 +40,11 @@ public class Player {
 
     public static final float flashlightInnerIntensity = 1.5f;
     public static final float flashlightMiddleIntensity = 1.25f;
-    public static final float flashlightOuterIntensity = 0.375f;
+    public static final float flashlightOuterIntensity = 0.75f;
 
-    private static final float PLAYER_SPEED = 5.0f;
-    private static final float PLAYER_SPRINT = 3.0f;
-    private static final int SHADOWMAP_SIZE = 1024;
+    public static final float PLAYER_SPEED = 5.0f;
+    public static final float PLAYER_SPRINT = 3.0f;
+    public static final int SHADOWMAP_SIZE = 1024;
 
     /**
      * the constructor takes in the flyCam from SimpleApplication
@@ -81,14 +81,14 @@ public class Player {
      */
     private void initFlashlight() {
         flashlightInner = new SpotLight();
-        flashlightInner.setSpotRange(32);
+        flashlightInner.setSpotRange(38);
         flashlightInner.setSpotInnerAngle(0f * FastMath.DEG_TO_RAD);
         flashlightInner.setSpotOuterAngle(8f * FastMath.DEG_TO_RAD);
         flashlightInner.setColor(ColorRGBA.White.mult(flashlightInnerIntensity));
         rootNode.addLight(flashlightInner);
 
         flashlightMiddle = new SpotLight();
-        flashlightMiddle.setSpotRange(38);
+        flashlightMiddle.setSpotRange(32);
         flashlightMiddle.setSpotInnerAngle(25f * FastMath.DEG_TO_RAD);
         flashlightMiddle.setSpotOuterAngle(34f * FastMath.DEG_TO_RAD);
         flashlightMiddle.setColor(ColorRGBA.Orange.mult(flashlightMiddleIntensity));
@@ -159,6 +159,13 @@ public class Player {
         }
 
         return true;
+    }
+
+    /**
+     * get the location of the player
+     */
+    public Vector3f getPosition() {
+        return physicsCharacter.getPhysicsLocation();
     }
 
     /**
