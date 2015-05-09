@@ -124,11 +124,11 @@ public class Maze extends SimpleApplication implements ActionListener {
         controller(new maze.HUD());
          layer(new LayerBuilder("background") {{
             childLayoutCenter();
- 
+            backgroundColor("#000f");
             // add image
-            image(new ImageBuilder() {{
-                filename("Textures/HUD/start.jpg");
-            }});
+            //image(new ImageBuilder() {{
+              //  filename("Textures/HUD/start.jpg");
+            //}});
  
         }});
  
