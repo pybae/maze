@@ -15,8 +15,22 @@ import com.jme3.light.AmbientLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
+import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.shape.Box;
+
+import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.builder.ImageBuilder;
+import de.lessvoid.nifty.builder.LayerBuilder;
+import de.lessvoid.nifty.builder.PanelBuilder;
+import de.lessvoid.nifty.builder.ScreenBuilder;
+import de.lessvoid.nifty.builder.TextBuilder;
+import de.lessvoid.nifty.controls.button.builder.ButtonBuilder;
+import de.lessvoid.nifty.screen.DefaultScreenController;
+import de.lessvoid.nifty.screen.Screen;
+import de.lessvoid.nifty.screen.ScreenController;
 
 public class Maze extends SimpleApplication implements ActionListener {
 
@@ -27,7 +41,8 @@ public class Maze extends SimpleApplication implements ActionListener {
     private MazeGenerator generator;
     private MazeLayout layout;
 
-
+    Nifty nifty;
+    
     // note that the width and height must be odd
     public static final int MAZE_WIDTH = 61;
     public static final int MAZE_HEIGHT = 61;
@@ -77,7 +92,6 @@ public class Maze extends SimpleApplication implements ActionListener {
             }
             System.out.println();
         }
-
     }
 
     /**
@@ -90,23 +104,135 @@ public class Maze extends SimpleApplication implements ActionListener {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
         bulletAppState.setDebugEnabled(false);
-
+        
         doorNode = new Node("Doors");
         wallNode = new Node("Walls");
         openNode = new Node("Floors");
         rootNode.attachChild(doorNode);
         rootNode.attachChild(wallNode);
         rootNode.attachChild(openNode);
-
-        initKeys();
-        initCrossHair();
-
-        generateMaze();
-
+        
+   
+    NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
+            assetManager, inputManager, audioRenderer, guiViewPort);
+    nifty = niftyDisplay.getNifty();
+   //flyCam.setDragToRotate(true);
+     guiViewPort.addProcessor(niftyDisplay);
+    nifty.loadStyleFile("nifty-default-styles.xml");
+    nifty.loadControlFile("nifty-default-controls.xml");
+        nifty.addScreen("start", new ScreenBuilder("start") {{
+        controller(new maze.HUD());
+         layer(new LayerBuilder("background") {{
+            childLayoutCenter();
+ 
+            // add image
+            image(new ImageBuilder() {{
+                filename("Textures/HUD/start.jpg");
+            }});
+ 
+        }});
+ 
+        layer(new LayerBuilder("foreground") {{
+                childLayoutVertical();
+ 
+            // panel added
+           panel(new PanelBuilder("panel_top") {{
+                childLayoutCenter();
+                alignCenter();
+                height("25%");
+                width("75%");
+ 
+                // add text
+                text(new TextBuilder() {{
+                    text("Sp00ky Maze");
+                    font("Interface/Fonts/Default.fnt");
+                    height("100%");
+                    width("100%");
+                }});
+ 
+            }});
+ 
+           panel(new PanelBuilder("panel_mid") {{
+                childLayoutCenter();
+                alignCenter();
+                height("50%");
+                width("75%");
+                // add text
+                text(new TextBuilder() {{
+                    text("Escape the maze.");
+                    font("Interface/Fonts/Default.fnt");
+                    wrap(true);
+                    height("100%");
+                    width("100%");
+                }});
+ 
+            }});
+ 
+            panel(new PanelBuilder("panel_bottom") {{
+                childLayoutHorizontal();
+                alignCenter();
+                height("25%");
+                width("75%");
+ 
+                panel(new PanelBuilder("panel_bottom_left") {{
+                    childLayoutCenter();
+                    valignCenter();
+                    height("50%");
+                    width("50%");
+ 
+                    // add control
+                    control(new ButtonBuilder("StartButton", "Start") {{
+                      alignCenter();
+                      valignCenter();
+                      height("50%");
+                      width("50%");
+                      visibleToMouse(true);
+                      interactOnClick("startGame(hud)");
+                      
+                      
+                    }});
+ 
+                }});
+ 
+               panel(new PanelBuilder("panel_bottom_right") {{
+                    childLayoutCenter();
+                    valignCenter();
+                    height("50%");
+                    width("50%");
+ 
+                    // add control
+                    control(new ButtonBuilder("QuitButton", "Quit") {{
+                      alignCenter();
+                      valignCenter();
+                      height("50%");
+                      width("50%");
+                      visibleToMouse(true);
+                      interactOnClick("quitGame()");
+                    }});
+ 
+                }});
+            }}); // panel added
+        }});
+ 
+        }}.build(nifty));        
+        
+        nifty.addScreen("hud", new ScreenBuilder("hud"){{
+         controller(new maze.HUD());
+          }}.build(nifty));
+        
+        nifty.gotoScreen("start");
+     
         initPlayer();
         initMobs();
+        initKeys();
+        initCrossHair();
+        generateMaze();
+        //nifty.gotoScreen("hud");
+        
     }
-
+ 
+    
+    
     @Override
     public void simpleUpdate(float tpf) {
         player.update(tpf);
@@ -127,6 +253,7 @@ public class Maze extends SimpleApplication implements ActionListener {
 
     private void initPlayer() {
         flyCam.setEnabled(true);
+        flyCam.setDragToRotate(false);
         cam.setFrustumFar(RENDER_DISTANCE);
 
         player = new Player(rootNode, assetManager, cam, getPhysicsSpace(), viewPort);
