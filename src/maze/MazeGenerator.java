@@ -14,6 +14,7 @@ public class MazeGenerator {
     private int maxRoomSize;
     private int roomTries;
     private int minRooms;
+    private int startRoomSize;
     private int extraConnectorChance;
 
     private ArrayList<Rectangle> rooms;
@@ -22,7 +23,8 @@ public class MazeGenerator {
 
     public MazeGenerator(int widthIn, int heightIn, int windinessIn,
                          int minRoomSizeIn, int maxRoomSizeIn,
-                         int roomTriesIn, int minRoomsIn) {
+                         int roomTriesIn, int minRoomsIn,
+                         int startRoomSizeIn, int extraConnectorChanceIn) {
         width = widthIn;
         height = heightIn;
         windiness = windinessIn;
@@ -30,7 +32,8 @@ public class MazeGenerator {
         maxRoomSize = maxRoomSizeIn;
         roomTries = roomTriesIn;
         minRooms = minRoomsIn;
-        extraConnectorChance = 100;
+        startRoomSize = startRoomSizeIn;
+        extraConnectorChance = extraConnectorChanceIn;
 
         currentRegion = -1;
     }
@@ -122,30 +125,29 @@ public class MazeGenerator {
         for(int i = 0; i < MAX_ADD_ROOMS_TRIES; i++) {
             rooms.clear();
 
-            int startSize = 5;
-            int startX = width / 2 - startSize / 2 + 1;
-            int startY = height / 2 - startSize / 2 + 1;
+            int startX = width / 2 - startRoomSize / 2 + 1;
+            int startY = height / 2 - startRoomSize / 2 + 1;
 
-            Rectangle start = new Rectangle(startX, startY, startSize, startSize);
+            Rectangle start = new Rectangle(startX, startY, startRoomSize, startRoomSize);
 
             rooms.add(start);
 
             startRegion();
 
-            for(int r = startY; r < startY + startSize; r++) {
-                for(int c = startX; c < startX + startSize; c++) {
+            for(int r = startY; r < startY + startRoomSize; r++) {
+                for(int c = startX; c < startX + startRoomSize; c++) {
                     carve(m, new Position(r, c), State.OPEN);
                 }
             }
 
             // encircle the room with walls
-            for(int r = startY - 1; r < startY + startSize + 1; r++) {
+            for(int r = startY - 1; r < startY + startRoomSize + 1; r++) {
                 carve(m, new Position(r, startX - 1), State.WALL);
-                carve(m, new Position(r, startX + startSize), State.WALL);
+                carve(m, new Position(r, startX + startRoomSize), State.WALL);
             }
-            for(int c = startX - 1; c < startX + startSize + 1; c++) {
+            for(int c = startX - 1; c < startX + startRoomSize + 1; c++) {
                 carve(m, new Position(startY - 1, c), State.WALL);
-                carve(m, new Position(startY + startSize, c), State.WALL);
+                carve(m, new Position(startY + startRoomSize, c), State.WALL);
             }
 
             for(int j = 0; j < roomTries; j++) {
@@ -205,7 +207,7 @@ public class MazeGenerator {
 
         m.rooms = new ArrayList<Rectangle>(rooms);
     }
-    
+
     // Implements "growing tree" algorithm to build the maze
     private void growMaze(MazeLayout m, Position pos) {
         ArrayList<Position> cells = new ArrayList<Position>();
@@ -308,10 +310,6 @@ public class MazeGenerator {
         }
 
         Set<Position> connectors = connectorRegions.keySet();
-        if(connectors.size() == 0) {
-            System.out.println("no connectors");
-            return;
-        }
 
         HashMap<Integer, Integer> merged = new HashMap<Integer, Integer>();
         HashSet<Integer> openRegions = new HashSet<Integer>();
@@ -323,6 +321,11 @@ public class MazeGenerator {
         while(openRegions.size() > 1) {
             Random rand = new Random();
             Position connector = null;
+
+            if(connectors.size() == 0) {
+                System.out.println("Regions possibly joined incorrectly.");
+                break;
+            }
             int selection = rand.nextInt(connectors.size());
 
             int count = 0;
@@ -385,7 +388,7 @@ public class MazeGenerator {
                 }
 
                 if(rand.nextInt(extraConnectorChance) == 0) {
-                    addJunction(m, pos);
+                    carve(m, pos, State.OPEN);
                 }
 
                 toRemove.add(pos);
@@ -402,7 +405,7 @@ public class MazeGenerator {
 
     // Adds a junction at a specified location
     private void addJunction(MazeLayout m, Position pos) {
-        m.setState(pos.r, pos.c, State.OPEN);
+        m.setState(pos.r, pos.c, State.DOOR);
     }
 
     // Determines whether an opening can be carved from the cell at the
@@ -429,7 +432,9 @@ public class MazeGenerator {
     // Set the state at the specified location
     private void carve(MazeLayout m, Position pos, State s) {
         m.setState(pos.r, pos.c, s);
-        regions[pos.r][pos.c] = currentRegion;
+        if(s != State.WALL && s != State.DOOR) {
+            regions[pos.r][pos.c] = currentRegion;
+        }
     }
 
     private class Position {
