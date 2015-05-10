@@ -1,6 +1,7 @@
 package maze;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.collision.CollisionResult;
@@ -40,7 +41,7 @@ public class Maze extends SimpleApplication implements ActionListener {
     private Golem golem;
     private MazeGenerator generator;
     private MazeLayout layout;
-
+    private AudioNode audio_bg;
     Nifty nifty;
 
     // note that the width and height must be odd
@@ -221,6 +222,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         initKeys();
         initCrossHair();
         generateMaze();
+        initSound();
     }
 
 
@@ -230,7 +232,14 @@ public class Maze extends SimpleApplication implements ActionListener {
         player.update(tpf);
         golem.update(tpf);
     }
-
+    private void initSound() {
+        audio_bg = new AudioNode(assetManager, "Sound/bg.wav", false);
+        audio_bg.setPositional(false);
+        audio_bg.setLooping(true);
+        audio_bg.setVolume(1);
+        rootNode.attachChild(audio_bg);
+        audio_bg.play();
+    }
     private void initMobs() {
         // AmbientLight al = new AmbientLight();
         // al.setColor(ColorRGBA.White.mult(1.3f));
