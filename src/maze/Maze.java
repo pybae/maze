@@ -55,7 +55,10 @@ public class Maze extends SimpleApplication implements ActionListener {
     public static final int MIN_ROOM_SIZE = 1;
     public static final int MAX_ROOM_SIZE = 3;
     public static final int MAX_ROOM_TRIES = 20;
-    public static final int MIN_ROOMS = 7;
+    public static final int MIN_ROOMS = 1;
+    public static final int START_ROOM_SIZE = 5;
+    public static final int EXTRA_CONNECTOR_CHANCE = 20;
+
     public static final int MAX_GOLEMS = 7;
     public static final int WALL_WIDTH = 16;
     public static final float GOLEM_CHANCE = 0.2f;
@@ -76,7 +79,9 @@ public class Maze extends SimpleApplication implements ActionListener {
                                       MIN_ROOM_SIZE,
                                       MAX_ROOM_SIZE,
                                       MAX_ROOM_TRIES,
-                                      MIN_ROOMS);
+                                      MIN_ROOMS,
+                                      START_ROOM_SIZE,
+                                      EXTRA_CONNECTOR_CHANCE);
 
         layout = generator.generate();
         layout.print();
@@ -90,6 +95,10 @@ public class Maze extends SimpleApplication implements ActionListener {
                                     assetManager,
                                     getPhysicsSpace());
                 } else if (layout.maze[r][c] == State.DOOR) {
+                    mz.renderObject(new Vector3f(16*r, 0, 16*c),
+                                    wallNode,
+                                    assetManager,
+                                    getPhysicsSpace());
                 } else if (layout.maze[r][c] == State.NOT_SET) {
                 } else {
                     oz.renderObject(new Vector3f(16*r, 0, 16*c),
