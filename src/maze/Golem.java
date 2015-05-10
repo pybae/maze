@@ -9,12 +9,14 @@ import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import java.awt.Rectangle;
 
 public class Golem {
     private Node rootNode;
     private AssetManager assetManager;
     private Player player;
     private PhysicsSpace physicsSpace;
+    private Rectangle room;
 
     private Node golem;
     private RigidBodyControl control;
@@ -25,12 +27,13 @@ public class Golem {
      * The constructor for the golem class
      * this takes in the current player to use for viewport and position
      */
-    public Golem(Node rootNode, AssetManager assetManager, Player player, PhysicsSpace physicsSpace) {
+    public Golem(Node rootNode, AssetManager assetManager, Player player, PhysicsSpace physicsSpace, Rectangle room) {
 
         this.rootNode = rootNode;
         this.assetManager = assetManager;
         this.player = player;
         this.physicsSpace = physicsSpace;
+        this.room = room;
 
         initModel();
     }
@@ -58,29 +61,39 @@ public class Golem {
     }
 
     /**
+     * checks if the player is within the golem's room
+     */
+    private boolean containsPlayer() {
+        Vector3f player_pos = player.getPosition();
+
+        return room.contains(player_pos.getZ() / Maze.WALL_WIDTH,
+                             player_pos.getX() / Maze.WALL_WIDTH);
+
+    }
+
+    /**
      * updates the position and direction of the golem
      */
     public void update(float tpf) {
-        BoundingVolume bv = golem.getWorldBound();
+        if (containsPlayer()) {
+            BoundingVolume bv = golem.getWorldBound();
 
-        if (!player.isLooking(bv)) {
-            Quaternion orientation = control.getPhysicsRotation();
-            Vector3f pos = control.getPhysicsLocation();
-            Vector3f player_pos = player.getPosition();
+            if (!player.isLooking(bv)) {
+                Quaternion orientation = control.getPhysicsRotation();
+                Vector3f player_pos = player.getPosition();
+                Vector3f pos = control.getPhysicsLocation();
 
-            Vector3f direction = player_pos.subtract(pos).normalize();
+                Vector3f direction = player_pos.subtract(pos).normalize();
 
-            direction.setY(0);
-            orientation.lookAt(direction, new Vector3f(0, 1, 0));
-            control.setPhysicsRotation(orientation);
+                direction.setY(0);
+                orientation.lookAt(direction, new Vector3f(0, 1, 0));
+                control.setPhysicsRotation(orientation);
 
-            pos.addLocal(direction.mult(GOLEM_SPEED));
-            setPosition(pos.getX(), pos.getZ());
-        } else {
-            Vector3f player_pos = player.getPosition();
-            Vector3f pos = control.getPhysicsLocation();
-            // System.out.println(Math.abs(player_pos.getX() - pos.getX()));
-            // System.out.println(Math.abs(player_pos.getZ() - pos.getZ()));
+                pos.addLocal(direction.mult(GOLEM_SPEED));
+                setPosition(pos.getX(), pos.getZ());
+            } else {
+                // do nothing
+            }
         }
     }
 }

@@ -6,3 +6,4 @@ build.xml
 nbproject/
 /dist/
 *.class
+.DS_STORE

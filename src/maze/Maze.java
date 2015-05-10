@@ -52,14 +52,15 @@ public class Maze extends SimpleApplication implements ActionListener {
     public static final int MAZE_WIDTH = 61;
     public static final int MAZE_HEIGHT = 61;
     public static final int MAZE_WINDINESS = 100;
-    public static final int MIN_ROOM_SIZE = 2;
-    public static final int MAX_ROOM_SIZE = 6;
+    public static final int MIN_ROOM_SIZE = 1;
+    public static final int MAX_ROOM_SIZE = 3;
     public static final int MAX_ROOM_TRIES = 20;
     public static final int MIN_ROOMS = 1;
     public static final int START_ROOM_SIZE = 5;
     public static final int EXTRA_CONNECTOR_CHANCE = 20;
 
     public static final int MAX_GOLEMS = 7;
+    public static final int WALL_WIDTH = 16;
     public static final float GOLEM_CHANCE = 0.2f;
 
     public static final float RENDER_DISTANCE = 50.0f;
@@ -68,9 +69,9 @@ public class Maze extends SimpleApplication implements ActionListener {
     }
 
     public void generateMaze() {
-        MazeEntity mz = new WallEntity(16, 16);
-        MazeEntity oz = new OpenEntity(16, 16);
-        MazeEntity dz = new DoorEntity(16, 16);
+        MazeEntity mz = new WallEntity(WALL_WIDTH, WALL_WIDTH);
+        MazeEntity oz = new OpenEntity(WALL_WIDTH, WALL_WIDTH);
+        MazeEntity dz = new DoorEntity(WALL_WIDTH, WALL_WIDTH);
 
         generator = new MazeGenerator(MAZE_WIDTH,
                                       MAZE_HEIGHT,
@@ -101,7 +102,7 @@ public class Maze extends SimpleApplication implements ActionListener {
                                     getPhysicsSpace(),
                                     true);
                     }
-                    else{
+                    else {
                         dz.renderObject(new Vector3f(16*r, 0, 16*c),
                                         doorNode, wallNode,
                                         assetManager,
@@ -131,10 +132,11 @@ public class Maze extends SimpleApplication implements ActionListener {
             if (current_golems < MAX_GOLEMS && rand.nextFloat() > GOLEM_CHANCE) {
                 current_golems++;
 
-                Golem golem = new Golem(golemNode, assetManager, player, getPhysicsSpace());
-                int x = room.x + rand.nextInt(room.width);
-                int z = room.y + rand.nextInt(room.height);
+                Golem golem = new Golem(golemNode, assetManager, player, getPhysicsSpace(), room);
+                int x = (room.y + rand.nextInt(room.height)) * WALL_WIDTH;
+                int z = (room.x + rand.nextInt(room.width)) * WALL_WIDTH;
                 golem.setPosition(x, z);
+                player.setSpawn(x, z + 1);
 
                 golems.add(golem);
             }
@@ -266,9 +268,9 @@ public class Maze extends SimpleApplication implements ActionListener {
 
         nifty.gotoScreen("start");
 
-        AmbientLight al = new AmbientLight();
-        al.setColor(ColorRGBA.White.mult(1.3f));
-        rootNode.addLight(al);
+        // AmbientLight al = new AmbientLight();
+        // al.setColor(ColorRGBA.White.mult(1.3f));
+        // rootNode.addLight(al);
 
         initPlayer();
         initKeys();
