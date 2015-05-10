@@ -18,7 +18,7 @@ public class Golem {
     private Node golem;
     private RigidBodyControl control;
 
-    public static final float GOLEM_SPEED = 0.5f;
+    public static final float GOLEM_SPEED = 0.2f;
 
     /**
      * The constructor for the golem class
@@ -42,7 +42,7 @@ public class Golem {
         golem.setLocalScale(1.4f);
 
         CollisionShape shape = CollisionShapeFactory.createMeshShape(golem);
-        control = new RigidBodyControl(shape, 0.0f); // cannot be moved by the player
+        control = new RigidBodyControl(shape, 0.0f);
         physicsSpace.add(control);
         golem.addControl(control);
 
@@ -54,24 +54,23 @@ public class Golem {
      */
     public void setPosition(float x, float z) {
         control.setPhysicsLocation(new Vector3f(x, 6, z));
-        golem.setLocalTranslation(new Vector3f(x, 6, z));
     }
 
     /**
      * updates the position and direction of the golem
      */
     public void update(float tpf) {
-        golem.lookAt(player.getPosition(), new Vector3f(0, 1, 0));
-
-        Vector3f forward_vector = golem.getLocalRotation().getRotationColumn(2);
+        Quaternion orientation = control.getPhysicsRotation();
         Vector3f pos = control.getPhysicsLocation();
-        pos = pos.addLocal(forward_vector.mult(GOLEM_SPEED));
+        Vector3f player_pos = player.getPosition();
+
+        Vector3f direction = player_pos.subtract(pos).normalize();
+
+        direction.setY(0);
+        orientation.lookAt(direction, new Vector3f(0, 1, 0));
+        control.setPhysicsRotation(orientation);
+
+        pos.addLocal(direction.mult(GOLEM_SPEED));
         setPosition(pos.getX(), pos.getZ());
-
-        golem.lookAt(player.getPosition(), new Vector3f(0, 1, 0));
-
-        // System.out.println("Golem location: ");
-        // System.out.println(pos.getX() + " " + pos.getZ());
-        // System.out.println(golem.getLocalRotation().getRotationColumn(2));
     }
 }

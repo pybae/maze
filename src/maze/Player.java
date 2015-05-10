@@ -1,4 +1,4 @@
-package maze;
+pplayer.PLAYER_RADIUSackage maze;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
@@ -45,6 +45,7 @@ public class Player {
     public static final float PLAYER_SPEED = 5.0f;
     public static final float PLAYER_SPRINT = 3.0f;
     public static final int SHADOWMAP_SIZE = 1024;
+    public static final float PLAYER_RADIUS = 3.0f;
 
     /**
      * the constructor takes in the flyCam from SimpleApplication
@@ -66,7 +67,7 @@ public class Player {
      */
     private void initPhysicsCharacter() {
         // the player collision model is done through a sphere
-        physicsCharacter = new PhysicsCharacter(new SphereCollisionShape(3.0f), 0.1f);
+        physicsCharacter = new PhysicsCharacter(new SphereCollisionShape(PLAYER_RADIUS), 0.1f);
 
         // player does not jump
         physicsCharacter.setJumpSpeed(0);

@@ -42,7 +42,7 @@ public class Maze extends SimpleApplication implements ActionListener {
     private MazeLayout layout;
 
     Nifty nifty;
-    
+
     // note that the width and height must be odd
     public static final int MAZE_WIDTH = 61;
     public static final int MAZE_HEIGHT = 61;
@@ -77,7 +77,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         for (int r = 0; r < layout.maze.length; r++) {
             for (int c = 0; c < layout.maze[0].length; c++) {
                 if (layout.maze[r][c] == State.WALL) {
-                    mz.renderObject(new Vector3f(16*r, 0, 16*c),
+                    oz.renderObject(new Vector3f(16*r, 0, 16*c),
                                     wallNode,
                                     assetManager,
                                     getPhysicsSpace());
@@ -104,15 +104,15 @@ public class Maze extends SimpleApplication implements ActionListener {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
         bulletAppState.setDebugEnabled(false);
-        
+
         doorNode = new Node("Doors");
         wallNode = new Node("Walls");
         openNode = new Node("Floors");
         rootNode.attachChild(doorNode);
         rootNode.attachChild(wallNode);
         rootNode.attachChild(openNode);
-        
-   
+
+
     NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
             assetManager, inputManager, audioRenderer, guiViewPort);
     nifty = niftyDisplay.getNifty();
@@ -129,19 +129,19 @@ public class Maze extends SimpleApplication implements ActionListener {
             //image(new ImageBuilder() {{
               //  filename("Textures/HUD/start.jpg");
             //}});
- 
+
         }});
- 
+
         layer(new LayerBuilder("foreground") {{
                 childLayoutVertical();
- 
+
             // panel added
            panel(new PanelBuilder("panel_top") {{
                 childLayoutCenter();
                 alignCenter();
                 height("25%");
                 width("75%");
- 
+
                 // add text
                 text(new TextBuilder() {{
                     text("Sp00ky Maze");
@@ -149,9 +149,9 @@ public class Maze extends SimpleApplication implements ActionListener {
                     height("100%");
                     width("100%");
                 }});
- 
+
             }});
- 
+
            panel(new PanelBuilder("panel_mid") {{
                 childLayoutCenter();
                 alignCenter();
@@ -165,21 +165,21 @@ public class Maze extends SimpleApplication implements ActionListener {
                     height("100%");
                     width("100%");
                 }});
- 
+
             }});
- 
+
             panel(new PanelBuilder("panel_bottom") {{
                 childLayoutHorizontal();
                 alignCenter();
                 height("25%");
                 width("75%");
- 
+
                 panel(new PanelBuilder("panel_bottom_left") {{
                     childLayoutCenter();
                     valignCenter();
                     height("50%");
                     width("50%");
- 
+
                     // add control
                     control(new ButtonBuilder("StartButton", "Start") {{
                       alignCenter();
@@ -188,18 +188,18 @@ public class Maze extends SimpleApplication implements ActionListener {
                       width("50%");
                       visibleToMouse(true);
                       interactOnClick("startGame(hud)");
-                      
-                      
+
+
                     }});
- 
+
                 }});
- 
+
                panel(new PanelBuilder("panel_bottom_right") {{
                     childLayoutCenter();
                     valignCenter();
                     height("50%");
                     width("50%");
- 
+
                     // add control
                     control(new ButtonBuilder("QuitButton", "Quit") {{
                       alignCenter();
@@ -209,30 +209,30 @@ public class Maze extends SimpleApplication implements ActionListener {
                       visibleToMouse(true);
                       interactOnClick("quitGame()");
                     }});
- 
+
                 }});
             }}); // panel added
         }});
- 
-        }}.build(nifty));        
-        
+
+        }}.build(nifty));
+
         nifty.addScreen("hud", new ScreenBuilder("hud"){{
          controller(new maze.HUD());
           }}.build(nifty));
-        
+
         nifty.gotoScreen("start");
-     
+
         initPlayer();
         initMobs();
         initKeys();
         initCrossHair();
         generateMaze();
         //nifty.gotoScreen("hud");
-        
+
     }
- 
-    
-    
+
+
+
     @Override
     public void simpleUpdate(float tpf) {
         player.update(tpf);
@@ -240,15 +240,15 @@ public class Maze extends SimpleApplication implements ActionListener {
     }
 
     private void initMobs() {
-        // AmbientLight al = new AmbientLight();
-        // al.setColor(ColorRGBA.White.mult(1.3f));
-        // rootNode.addLight(al);
+        AmbientLight al = new AmbientLight();
+        al.setColor(ColorRGBA.White.mult(1.3f));
+        rootNode.addLight(al);
 
         Node golemNode = new Node("Golems");
         rootNode.attachChild(golemNode);
 
         golem = new Golem(golemNode, assetManager, player, getPhysicsSpace());
-        golem.setPosition(30*16, 21*16);
+        golem.setPosition(30*16, 22*16);
     }
 
     private void initPlayer() {
@@ -259,7 +259,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         player = new Player(rootNode, assetManager, cam, getPhysicsSpace(), viewPort);
 
         // for now, set the player spawn to the center of the maze
-        player.setSpawn(30*16, 20*16);
+        player.setSpawn(30*16, 21*16);
     }
 
     private void initCrossHair(){
