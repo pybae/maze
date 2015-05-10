@@ -52,6 +52,8 @@ public class Maze extends SimpleApplication implements ActionListener {
     public static final int MAX_ROOM_SIZE = 6;
     public static final int MAX_ROOM_TRIES = 20;
     public static final int MIN_ROOMS = 1;
+    public static final int START_ROOM_SIZE = 5;
+    public static final int EXTRA_CONNECTOR_CHANCE = 20;
 
     public static final float RENDER_DISTANCE = 50.0f;
 
@@ -69,7 +71,9 @@ public class Maze extends SimpleApplication implements ActionListener {
                                       MIN_ROOM_SIZE,
                                       MAX_ROOM_SIZE,
                                       MAX_ROOM_TRIES,
-                                      MIN_ROOMS);
+                                      MIN_ROOMS,
+                                      START_ROOM_SIZE,
+                                      EXTRA_CONNECTOR_CHANCE);
 
         layout = generator.generate();
         layout.print();
