@@ -236,7 +236,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         audio_bg = new AudioNode(assetManager, "Sound/bg.wav", false);
         audio_bg.setPositional(false);
         audio_bg.setLooping(true);
-        audio_bg.setVolume(1);
+        audio_bg.setVolume(.5f);
         rootNode.attachChild(audio_bg);
         audio_bg.play();
     }

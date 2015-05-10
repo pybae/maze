@@ -1,6 +1,7 @@
 package maze;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioNode;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -28,6 +29,7 @@ public class Player {
     private Camera cam;
     private PhysicsSpace physicsSpace;
     private ViewPort viewPort;
+    private AudioNode audio_sprint;
 
     private PhysicsCharacter physicsCharacter;
     private SpotLight flashlightInner;
@@ -59,6 +61,7 @@ public class Player {
         this.physicsSpace = physicsSpace;
         this.viewPort = viewPort;
 
+        initSoundCharacter();
         initPhysicsCharacter();
         initFlashlight();
     }
@@ -77,7 +80,14 @@ public class Player {
 
         physicsSpace.add(physicsCharacter);
     }
-
+    private void initSoundCharacter() {
+        audio_sprint = new AudioNode(assetManager, "Sound/sprint.ogg", true);
+        audio_sprint.setPositional(false);
+        audio_sprint.setLooping(true);
+        audio_sprint.setVolume(2);
+        rootNode.attachChild(audio_sprint);
+        
+    }
     /**
      * a helper method for initializing the flashlight
      */
@@ -196,6 +206,7 @@ public class Player {
         walkDirection.set(0, 0, 0);
 
         if (sprint) {
+            audio_sprint.play();
             if (headBob < 360){
                 headBob += 10*tpf;
                 plLocation.setY(plLocation.getY() + 0.2f*FastMath.sin(headBob));
@@ -217,6 +228,7 @@ public class Player {
             speed = PLAYER_SPRINT;
         }
         else {
+            audio_sprint.stop();
             if(headBob != 0){
                 headBob = 0;
             }
