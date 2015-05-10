@@ -4,6 +4,5 @@ build.xml
 *.dylib
 *.jnlp
 nbproject/
-/dist/
 *.class
 .DS_STORE
