@@ -20,6 +20,7 @@ import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 
 import de.lessvoid.nifty.Nifty;
@@ -32,16 +33,19 @@ import de.lessvoid.nifty.controls.button.builder.ButtonBuilder;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class Maze extends SimpleApplication implements ActionListener {
 
     private BulletAppState bulletAppState;
-    private Node doorNode, wallNode, openNode;
+    private Node doorNode, wallNode, openNode, golemNode;
     private Player player;
-    private Golem golem;
     private MazeGenerator generator;
     private MazeLayout layout;
     private AudioNode audio_bg;
+    private ArrayList<Golem> golems = new ArrayList<Golem>();
     Nifty nifty;
 
     // note that the width and height must be odd
@@ -54,6 +58,9 @@ public class Maze extends SimpleApplication implements ActionListener {
     public static final int MIN_ROOMS = 1;
     public static final int START_ROOM_SIZE = 5;
     public static final int EXTRA_CONNECTOR_CHANCE = 20;
+    
+    public static final int MAX_GOLEMS = 7;
+    public static final float GOLEM_CHANCE = 0.2f;
 
     public static final float RENDER_DISTANCE = 50.0f;
 
@@ -95,7 +102,24 @@ public class Maze extends SimpleApplication implements ActionListener {
                                     getPhysicsSpace());
                 }
             }
-            System.out.println();
+        }
+
+        Random rand = new Random();
+
+        int current_golems = 0;
+        for (int i = 0; i < layout.rooms.size(); i++) {
+            Rectangle room = layout.rooms.get(i);
+
+            if (current_golems < MAX_GOLEMS && rand.nextFloat() > GOLEM_CHANCE) {
+                current_golems++;
+
+                Golem golem = new Golem(golemNode, assetManager, player, getPhysicsSpace());
+                int x = room.x + rand.nextInt(room.width);
+                int z = room.y + rand.nextInt(room.height);
+                golem.setPosition(x, z);
+
+                golems.add(golem);
+            }
         }
     }
 
@@ -113,9 +137,12 @@ public class Maze extends SimpleApplication implements ActionListener {
         doorNode = new Node("Doors");
         wallNode = new Node("Walls");
         openNode = new Node("Floors");
+        golemNode = new Node("Golems");
+
         rootNode.attachChild(doorNode);
         rootNode.attachChild(wallNode);
         rootNode.attachChild(openNode);
+        rootNode.attachChild(golemNode);
 
 
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
@@ -221,21 +248,25 @@ public class Maze extends SimpleApplication implements ActionListener {
 
         nifty.gotoScreen("start");
 
+        AmbientLight al = new AmbientLight();
+        al.setColor(ColorRGBA.White.mult(1.3f));
+        rootNode.addLight(al);
+
         initPlayer();
-        initMobs();
         initKeys();
         initCrossHair();
         generateMaze();
         initSound();
     }
 
-
-
     @Override
     public void simpleUpdate(float tpf) {
         player.update(tpf);
-        golem.update(tpf);
+        for (Golem golem : golems) {
+            golem.update(tpf);
+        }
     }
+
     private void initSound() {
         audio_bg = new AudioNode(assetManager, "Sound/bg.wav", false);
         audio_bg.setPositional(false);
@@ -243,17 +274,6 @@ public class Maze extends SimpleApplication implements ActionListener {
         audio_bg.setVolume(.5f);
         rootNode.attachChild(audio_bg);
         audio_bg.play();
-    }
-    private void initMobs() {
-        // AmbientLight al = new AmbientLight();
-        // al.setColor(ColorRGBA.White.mult(1.3f));
-        // rootNode.addLight(al);
-
-        Node golemNode = new Node("Golems");
-        rootNode.attachChild(golemNode);
-
-        golem = new Golem(golemNode, assetManager, player, getPhysicsSpace());
-        golem.setPosition(30*16, 22*16);
     }
 
     private void initPlayer() {

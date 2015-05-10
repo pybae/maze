@@ -80,14 +80,15 @@ public class Player {
 
         physicsSpace.add(physicsCharacter);
     }
+
     private void initSoundCharacter() {
         audio_sprint = new AudioNode(assetManager, "Sound/sprint.ogg", true);
         audio_sprint.setPositional(false);
         audio_sprint.setLooping(true);
         audio_sprint.setVolume(2);
         rootNode.attachChild(audio_sprint);
-        
     }
+
     /**
      * a helper method for initializing the flashlight
      */
