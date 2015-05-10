@@ -308,10 +308,6 @@ public class MazeGenerator {
         }
 
         Set<Position> connectors = connectorRegions.keySet();
-        if(connectors.size() == 0) {
-            System.out.println("no connectors");
-            return;
-        }
 
         HashMap<Integer, Integer> merged = new HashMap<Integer, Integer>();
         HashSet<Integer> openRegions = new HashSet<Integer>();
@@ -323,6 +319,11 @@ public class MazeGenerator {
         while(openRegions.size() > 1) {
             Random rand = new Random();
             Position connector = null;
+
+            if(connectors.size() == 0) {
+                System.out.println("Regions possibly joined incorrectly.");
+                break;
+            }
             int selection = rand.nextInt(connectors.size());
 
             int count = 0;
@@ -429,7 +430,9 @@ public class MazeGenerator {
     // Set the state at the specified location
     private void carve(MazeLayout m, Position pos, State s) {
         m.setState(pos.r, pos.c, s);
-        regions[pos.r][pos.c] = currentRegion;
+        if(s != State.WALL && s != State.DOOR) {
+            regions[pos.r][pos.c] = currentRegion;
+        }
     }
 
     private class Position {
