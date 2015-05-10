@@ -205,7 +205,7 @@ public class MazeGenerator {
 
         m.rooms = new ArrayList<Rectangle>(rooms);
     }
-    
+
     // Implements "growing tree" algorithm to build the maze
     private void growMaze(MazeLayout m, Position pos) {
         ArrayList<Position> cells = new ArrayList<Position>();
