@@ -387,7 +387,9 @@ public class MazeGenerator {
                     continue;
                 }
 
-                if(rand.nextInt(extraConnectorChance) == 0) {
+                if(regions[pos.r - 1][pos.c] != 0 && regions[pos.r][pos.c - 1] != 0 &&
+                   regions[pos.r + 1][pos.c] != 0 && regions[pos.r][pos.c + 1] != 0 &&
+                   rand.nextInt(extraConnectorChance) == 0) {
                     carve(m, pos, State.OPEN);
                 }
 
