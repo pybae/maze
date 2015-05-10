@@ -1,6 +1,7 @@
 package maze;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.objects.PhysicsCharacter;
@@ -244,5 +245,18 @@ public class Player {
         flashlightOuter.setDirection(lightDir);
 
         cam.setLocation(plLocation);
+    }
+
+    /**
+     * a method to determine if the player is looking at the bounding volume
+     */
+    public boolean isLooking(BoundingVolume bv) {
+        int planeState = cam.getPlaneState();
+        cam.setPlaneState(0);
+
+        Camera.FrustumIntersect result = cam.contains(bv);
+        cam.setPlaneState(planeState);
+
+        return result == Camera.FrustumIntersect.Inside;
     }
 }

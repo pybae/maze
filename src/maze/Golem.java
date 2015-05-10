@@ -1,6 +1,7 @@
 package maze;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -60,17 +61,21 @@ public class Golem {
      * updates the position and direction of the golem
      */
     public void update(float tpf) {
-        Quaternion orientation = control.getPhysicsRotation();
-        Vector3f pos = control.getPhysicsLocation();
-        Vector3f player_pos = player.getPosition();
+        BoundingVolume bv = golem.getWorldBound();
 
-        Vector3f direction = player_pos.subtract(pos).normalize();
+        if (!player.isLooking(bv)) {
+            Quaternion orientation = control.getPhysicsRotation();
+            Vector3f pos = control.getPhysicsLocation();
+            Vector3f player_pos = player.getPosition();
 
-        direction.setY(0);
-        orientation.lookAt(direction, new Vector3f(0, 1, 0));
-        control.setPhysicsRotation(orientation);
+            Vector3f direction = player_pos.subtract(pos).normalize();
 
-        pos.addLocal(direction.mult(GOLEM_SPEED));
-        setPosition(pos.getX(), pos.getZ());
+            direction.setY(0);
+            orientation.lookAt(direction, new Vector3f(0, 1, 0));
+            control.setPhysicsRotation(orientation);
+
+            pos.addLocal(direction.mult(GOLEM_SPEED));
+            setPosition(pos.getX(), pos.getZ());
+        }
     }
 }
