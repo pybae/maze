@@ -257,6 +257,6 @@ public class Player {
         Camera.FrustumIntersect result = cam.contains(bv);
         cam.setPlaneState(planeState);
 
-        return result == Camera.FrustumIntersect.Inside;
+        return result == Camera.FrustumIntersect.Intersects;
     }
 }
