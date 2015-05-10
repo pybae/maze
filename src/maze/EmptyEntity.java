@@ -37,4 +37,10 @@ public class EmptyEntity implements MazeEntity {
                              AssetManager assetManager,
                              PhysicsSpace physicsSpace) {
     }
+
+    public void renderObject(Vector3f loc, Node rootNode, Node wallNode,
+                             AssetManager assetManager,
+                             PhysicsSpace physicsSpace,
+                             boolean orientation) {
+    }
 }

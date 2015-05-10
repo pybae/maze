@@ -81,4 +81,10 @@ public class WallEntity extends Maze implements MazeEntity {
         box.addControl(new RigidBodyControl(0));
         physicsSpace.addAll(box);
     }
+
+    public void renderObject(Vector3f loc, Node rootNode, Node wallNode,
+                             AssetManager assetManager,
+                             PhysicsSpace physicsSpace,
+                             boolean orientation) {
+    }
 }

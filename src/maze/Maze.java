@@ -78,8 +78,13 @@ public class Maze extends SimpleApplication implements ActionListener {
         for (int r = 0; r < layout.maze.length; r++) {
             for (int c = 0; c < layout.maze[0].length; c++) {
                 if (layout.maze[r][c] == State.WALL) {
-                    mz.renderObject(new Vector3f(16*r, 0, 16*c),
-                                    wallNode,
+                    dz.renderObject(new Vector3f(16*r, 0, 16*c),
+                                    doorNode, wallNode,
+                                    assetManager,
+                                    getPhysicsSpace(),
+                                    true);
+                    oz.renderObject(new Vector3f(16*r, 0, 16*c),
+                                    openNode,
                                     assetManager,
                                     getPhysicsSpace());
                 } else if (layout.maze[r][c] == State.DOOR) {
