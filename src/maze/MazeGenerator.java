@@ -21,6 +21,9 @@ public class MazeGenerator {
     private int[][] regions;
     private int currentRegion;
 
+    private int startRegion;
+    private int endRegion;
+
     public MazeGenerator(int widthIn, int heightIn, int windinessIn,
                          int minRoomSizeIn, int maxRoomSizeIn,
                          int roomTriesIn, int minRoomsIn,
@@ -36,6 +39,8 @@ public class MazeGenerator {
         extraConnectorChance = extraConnectorChanceIn;
 
         currentRegion = -1;
+        startRegion = -1;
+        endRegion = -1;
     }
 
     // Using the width, height, and windiness of the passages, this method will
@@ -134,6 +139,8 @@ public class MazeGenerator {
 
             startRegion();
 
+            startRegion = currentRegion;
+
             for(int r = startY; r < startY + startRoomSize; r++) {
                 for(int c = startX; c < startX + startRoomSize; c++) {
                     carve(m, new Position(r, c), State.OPEN);
@@ -206,6 +213,8 @@ public class MazeGenerator {
         }
 
         m.rooms = new ArrayList<Rectangle>(rooms);
+
+        endRegion = currentRegion;
     }
 
     // Implements "growing tree" algorithm to build the maze
@@ -387,9 +396,11 @@ public class MazeGenerator {
                     continue;
                 }
 
-                if(regions[pos.r - 1][pos.c] != 0 && regions[pos.r][pos.c - 1] != 0 &&
-                   regions[pos.r + 1][pos.c] != 0 && regions[pos.r][pos.c + 1] != 0 &&
-                   rand.nextInt(extraConnectorChance) == 0) {
+                if(rand.nextInt(extraConnectorChance) == 0 &&
+                   regions[pos.r - 1][pos.c] != startRegion && regions[pos.r][pos.c - 1] != startRegion &&
+                   regions[pos.r + 1][pos.c] != startRegion && regions[pos.r][pos.c + 1] != startRegion &&
+                   regions[pos.r - 1][pos.c] != endRegion && regions[pos.r][pos.c - 1] != endRegion &&
+                   regions[pos.r + 1][pos.c] != endRegion && regions[pos.r][pos.c + 1] != endRegion) {
                     carve(m, pos, State.OPEN);
                 }
 

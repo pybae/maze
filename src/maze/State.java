@@ -4,5 +4,6 @@ public enum State {
     NOT_SET,
     WALL,
     OPEN,
-    DOOR
+    DOOR,
+    DEBUG
 }

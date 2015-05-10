@@ -34,6 +34,8 @@ public class MazeLayout {
                     System.out.print("O ");
                 } else if(maze[r][c] == State.NOT_SET) {
                     System.out.print("- ");
+                } else if(maze[r][c] == State.DEBUG) {
+                    System.out.print("% ");
                 } else {
                     System.out.print("  ");
                 }
