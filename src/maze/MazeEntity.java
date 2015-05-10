@@ -15,6 +15,10 @@ public interface MazeEntity {
     public void renderObject(Vector3f loc, Node rootNode,
                              AssetManager assetManager,
                              PhysicsSpace physicsSpace);
+    public void renderObject(Vector3f loc, Node rootNode, Node wallNode,
+                             AssetManager assetManager,
+                             PhysicsSpace physicsSpace,
+                             boolean orientation);
     public float getWidth();
     public float getLength();
     public float getHeight();

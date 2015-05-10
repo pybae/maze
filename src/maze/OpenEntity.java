@@ -112,4 +112,10 @@ public class OpenEntity implements MazeEntity {
         physicsSpace.addAll(box);
         physicsSpace.addAll(ceiling);
     }
+
+    public void renderObject(Vector3f loc, Node rootNode, Node wallNode,
+                             AssetManager assetManager,
+                             PhysicsSpace physicsSpace,
+                             boolean orientation) {
+    }
 }
