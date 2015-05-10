@@ -59,8 +59,8 @@ public class Maze extends SimpleApplication implements ActionListener {
 
     public void generateMaze() {
         MazeEntity mz = new WallEntity(16, 16);
-        OpenEntity oz = new OpenEntity(16, 16);
-        DoorEntity dz = new DoorEntity(16, 16);
+        MazeEntity oz = new OpenEntity(16, 16);
+        MazeEntity dz = new DoorEntity(16, 16);
 
         generator = new MazeGenerator(MAZE_WIDTH,
                                       MAZE_HEIGHT,
@@ -77,7 +77,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         for (int r = 0; r < layout.maze.length; r++) {
             for (int c = 0; c < layout.maze[0].length; c++) {
                 if (layout.maze[r][c] == State.WALL) {
-                    oz.renderObject(new Vector3f(16*r, 0, 16*c),
+                    mz.renderObject(new Vector3f(16*r, 0, 16*c),
                                     wallNode,
                                     assetManager,
                                     getPhysicsSpace());
@@ -240,9 +240,9 @@ public class Maze extends SimpleApplication implements ActionListener {
     }
 
     private void initMobs() {
-        AmbientLight al = new AmbientLight();
-        al.setColor(ColorRGBA.White.mult(1.3f));
-        rootNode.addLight(al);
+        // AmbientLight al = new AmbientLight();
+        // al.setColor(ColorRGBA.White.mult(1.3f));
+        // rootNode.addLight(al);
 
         Node golemNode = new Node("Golems");
         rootNode.attachChild(golemNode);

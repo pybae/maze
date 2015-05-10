@@ -252,11 +252,11 @@ public class Player {
      */
     public boolean isLooking(BoundingVolume bv) {
         int planeState = cam.getPlaneState();
-        cam.setPlaneState(0);
 
+        cam.setPlaneState(0);
         Camera.FrustumIntersect result = cam.contains(bv);
         cam.setPlaneState(planeState);
 
-        return result == Camera.FrustumIntersect.Intersects;
+        return result == Camera.FrustumIntersect.Intersects || result == Camera.FrustumIntersect.Inside;
     }
 }

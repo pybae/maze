@@ -76,6 +76,11 @@ public class Golem {
 
             pos.addLocal(direction.mult(GOLEM_SPEED));
             setPosition(pos.getX(), pos.getZ());
+        } else {
+            Vector3f player_pos = player.getPosition();
+            Vector3f pos = control.getPhysicsLocation();
+            // System.out.println(Math.abs(player_pos.getX() - pos.getX()));
+            // System.out.println(Math.abs(player_pos.getZ() - pos.getZ()));
         }
     }
 }
