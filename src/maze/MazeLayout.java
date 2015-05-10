@@ -1,9 +1,11 @@
 package maze;
 
 import java.util.*;
+import java.awt.Rectangle;
 
 public class MazeLayout {
     public State[][] maze;
+    public ArrayList<Rectangle> rooms;
 
     public MazeLayout(int w, int h) {
         maze = new State[h][w];

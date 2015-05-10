@@ -202,6 +202,8 @@ public class MazeGenerator {
                 break;
             }
         }
+
+        m.rooms = new ArrayList<Rectangle>(rooms);
     }
     
     // Implements "growing tree" algorithm to build the maze
