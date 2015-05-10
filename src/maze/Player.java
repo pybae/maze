@@ -1,4 +1,4 @@
-pplayer.PLAYER_RADIUSackage maze;
+package maze;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
