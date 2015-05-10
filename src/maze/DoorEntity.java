@@ -116,12 +116,12 @@ public class DoorEntity implements MazeEntity {
         Texture bTexture = assetManager.loadTexture("Textures/Terrain/Wall/moreBricks_n.png");
         bTexture.setWrap(Texture.WrapMode.Repeat);
 
-        box1.getMesh().scaleTextureCoordinates(new Vector2f((float) Math.ceil(width1 / 50),
-                                                           (float) Math.ceil(height1 / 50)));
-        box2.getMesh().scaleTextureCoordinates(new Vector2f((float) Math.ceil(width2 / 50),
-                                                          (float) Math.ceil(height2 / 50)));
-        box3.getMesh().scaleTextureCoordinates(new Vector2f((float) Math.ceil(width1 / 50),
-                                                           (float) Math.ceil(height1/ 50)));
+        box1.getMesh().scaleTextureCoordinates(new Vector2f((float) Math.ceil(width1 / 1000),
+                                                           (float) Math.ceil(height1 / 1000)));
+        box2.getMesh().scaleTextureCoordinates(new Vector2f((float) Math.ceil(width2 / 1000),
+                                                          (float) Math.ceil(height2 / 1000)));
+        box3.getMesh().scaleTextureCoordinates(new Vector2f((float) Math.ceil(width1 / 1000),
+                                                           (float) Math.ceil(height1/ 1000)));
 
         mat.setTexture("DiffuseMap", texture);
 

@@ -58,7 +58,7 @@ public class Maze extends SimpleApplication implements ActionListener {
     public static final int MIN_ROOMS = 1;
     public static final int START_ROOM_SIZE = 5;
     public static final int EXTRA_CONNECTOR_CHANCE = 20;
-    
+
     public static final int MAX_GOLEMS = 7;
     public static final float GOLEM_CHANCE = 0.2f;
 
@@ -89,16 +89,29 @@ public class Maze extends SimpleApplication implements ActionListener {
         for (int r = 0; r < layout.maze.length; r++) {
             for (int c = 0; c < layout.maze[0].length; c++) {
                 if (layout.maze[r][c] == State.WALL) {
-                    dz.renderObject(new Vector3f(16*r, 0, 16*c),
+                    mz.renderObject(new Vector3f(16*r, 0, 16*c),
+                                    wallNode,
+                                    assetManager,
+                                    getPhysicsSpace());
+                } else if (layout.maze[r][c] == State.DOOR) {
+                    if(layout.maze[r+1][c] == State.DOOR || layout.maze[r-1][c] == State.DOOR){
+                        dz.renderObject(new Vector3f(16*r, 0, 16*c),
                                     doorNode, wallNode,
                                     assetManager,
                                     getPhysicsSpace(),
                                     true);
+                    }
+                    else{
+                        dz.renderObject(new Vector3f(16*r, 0, 16*c),
+                                        doorNode, wallNode,
+                                        assetManager,
+                                        getPhysicsSpace(),
+                                        false);
+                    }
                     oz.renderObject(new Vector3f(16*r, 0, 16*c),
                                     openNode,
                                     assetManager,
                                     getPhysicsSpace());
-                } else if (layout.maze[r][c] == State.DOOR) {
                 } else if (layout.maze[r][c] == State.NOT_SET) {
                 } else {
                     oz.renderObject(new Vector3f(16*r, 0, 16*c),
