@@ -136,7 +136,6 @@ public class Maze extends SimpleApplication implements ActionListener {
                 int x = (room.y + rand.nextInt(room.height)) * WALL_WIDTH;
                 int z = (room.x + rand.nextInt(room.width)) * WALL_WIDTH;
                 golem.setPosition(x, z);
-                player.setSpawn(x, z + 1);
 
                 golems.add(golem);
             }
@@ -304,7 +303,8 @@ public class Maze extends SimpleApplication implements ActionListener {
         player = new Player(rootNode, assetManager, cam, getPhysicsSpace(), viewPort);
 
         // for now, set the player spawn to the center of the maze
-        player.setSpawn(30*16, 21*16);
+        player.setSpawn((MAZE_WIDTH / 2) * WALL_WIDTH,
+                        (MAZE_HEIGHT / 2) * WALL_WIDTH);
     }
 
     private void initCrossHair(){
