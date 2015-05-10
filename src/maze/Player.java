@@ -39,9 +39,9 @@ public class Player {
     private float headBob = 0;
     private float lightSway = 0;
 
-    public static final float flashlightInnerIntensity = 1.5f;
-    public static final float flashlightMiddleIntensity = 1.25f;
-    public static final float flashlightOuterIntensity = 0.75f;
+    public static final float flashlightInnerIntensity = 1.15f;
+    public static final float flashlightMiddleIntensity = 0.65f;
+    public static final float flashlightOuterIntensity = 0.5f;
 
     public static final float PLAYER_SPEED = 5.0f;
     public static final float PLAYER_SPRINT = 3.0f;
@@ -83,14 +83,14 @@ public class Player {
      */
     private void initFlashlight() {
         flashlightInner = new SpotLight();
-        flashlightInner.setSpotRange(38);
+        flashlightInner.setSpotRange(32);
         flashlightInner.setSpotInnerAngle(0f * FastMath.DEG_TO_RAD);
         flashlightInner.setSpotOuterAngle(8f * FastMath.DEG_TO_RAD);
         flashlightInner.setColor(ColorRGBA.White.mult(flashlightInnerIntensity));
         rootNode.addLight(flashlightInner);
 
         flashlightMiddle = new SpotLight();
-        flashlightMiddle.setSpotRange(32);
+        flashlightMiddle.setSpotRange(38);
         flashlightMiddle.setSpotInnerAngle(25f * FastMath.DEG_TO_RAD);
         flashlightMiddle.setSpotOuterAngle(34f * FastMath.DEG_TO_RAD);
         flashlightMiddle.setColor(ColorRGBA.Orange.mult(flashlightMiddleIntensity));
@@ -154,10 +154,18 @@ public class Player {
             down = isPressed;
         } else if (binding.equals("Sprint") && !isPressed) {
             sprint = false;
+            optSprint = false;
         } else if (binding.equals("Sprint")) {
-            sprint = isPressed;
+            optSprint = isPressed;
         } else {
             return false;
+        }
+
+        if (binding.equals("Up") && optSprint) {
+            sprint = isPressed;
+        }
+        if (binding.equals("Sprint") && up) {
+            sprint = isPressed;
         }
 
         return true;

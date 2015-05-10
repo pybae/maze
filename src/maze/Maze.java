@@ -113,23 +113,22 @@ public class Maze extends SimpleApplication implements ActionListener {
         rootNode.attachChild(openNode);
 
 
-    NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
-            assetManager, inputManager, audioRenderer, guiViewPort);
-    nifty = niftyDisplay.getNifty();
-   //flyCam.setDragToRotate(true);
-     guiViewPort.addProcessor(niftyDisplay);
-    nifty.loadStyleFile("nifty-default-styles.xml");
-    nifty.loadControlFile("nifty-default-controls.xml");
+        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
+                assetManager, inputManager, audioRenderer, guiViewPort);
+        nifty = niftyDisplay.getNifty();
+        //flyCam.setDragToRotate(true);
+        guiViewPort.addProcessor(niftyDisplay);
+        nifty.loadStyleFile("nifty-default-styles.xml");
+        nifty.loadControlFile("nifty-default-controls.xml");
         nifty.addScreen("start", new ScreenBuilder("start") {{
         controller(new maze.HUD());
-         layer(new LayerBuilder("background") {{
+        layer(new LayerBuilder("background"){{
             childLayoutCenter();
             backgroundColor("#000f");
             // add image
             //image(new ImageBuilder() {{
               //  filename("Textures/HUD/start.jpg");
             //}});
-
         }});
 
         layer(new LayerBuilder("foreground") {{
@@ -149,8 +148,7 @@ public class Maze extends SimpleApplication implements ActionListener {
                     height("100%");
                     width("100%");
                 }});
-
-            }});
+           }});
 
            panel(new PanelBuilder("panel_mid") {{
                 childLayoutCenter();
@@ -158,6 +156,7 @@ public class Maze extends SimpleApplication implements ActionListener {
                 height("50%");
                 width("75%");
                 // add text
+
                 text(new TextBuilder() {{
                     text("Escape the maze.");
                     font("Interface/Fonts/Default.fnt");
@@ -165,7 +164,6 @@ public class Maze extends SimpleApplication implements ActionListener {
                     height("100%");
                     width("100%");
                 }});
-
             }});
 
             panel(new PanelBuilder("panel_bottom") {{
@@ -182,19 +180,16 @@ public class Maze extends SimpleApplication implements ActionListener {
 
                     // add control
                     control(new ButtonBuilder("StartButton", "Start") {{
-                      alignCenter();
-                      valignCenter();
-                      height("50%");
-                      width("50%");
-                      visibleToMouse(true);
-                      interactOnClick("startGame(hud)");
-
-
+                        alignCenter();
+                        valignCenter();
+                        height("50%");
+                        width("50%");
+                        visibleToMouse(true);
+                        interactOnClick("startGame(hud)");
                     }});
-
                 }});
 
-               panel(new PanelBuilder("panel_bottom_right") {{
+                panel(new PanelBuilder("panel_bottom_right") {{
                     childLayoutCenter();
                     valignCenter();
                     height("50%");
@@ -202,14 +197,13 @@ public class Maze extends SimpleApplication implements ActionListener {
 
                     // add control
                     control(new ButtonBuilder("QuitButton", "Quit") {{
-                      alignCenter();
-                      valignCenter();
-                      height("50%");
-                      width("50%");
-                      visibleToMouse(true);
-                      interactOnClick("quitGame()");
+                        alignCenter();
+                        valignCenter();
+                        height("50%");
+                        width("50%");
+                        visibleToMouse(true);
+                        interactOnClick("quitGame()");
                     }});
-
                 }});
             }}); // panel added
         }});
@@ -217,8 +211,8 @@ public class Maze extends SimpleApplication implements ActionListener {
         }}.build(nifty));
 
         nifty.addScreen("hud", new ScreenBuilder("hud"){{
-         controller(new maze.HUD());
-          }}.build(nifty));
+            controller(new maze.HUD());
+        }}.build(nifty));
 
         nifty.gotoScreen("start");
 
@@ -227,8 +221,6 @@ public class Maze extends SimpleApplication implements ActionListener {
         initKeys();
         initCrossHair();
         generateMaze();
-        //nifty.gotoScreen("hud");
-
     }
 
 
