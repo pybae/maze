@@ -25,9 +25,9 @@ public class HUD extends AbstractAppState implements ScreenController {
 
     public void startGame(String nextScreen) {
 
-        nifty.gotoScreen(nextScreen)
+        nifty.gotoScreen(nextScreen);
             // switch to another screen
-            }
+    }
 
     public void quitGame() {
         app.stop();
