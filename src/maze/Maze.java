@@ -94,7 +94,7 @@ public class Maze extends SimpleApplication implements ActionListener {
                                     assetManager,
                                     getPhysicsSpace());
                 } else if (layout.maze[r][c] == State.DOOR) {
-                    if(layout.maze[r+1][c] == State.DOOR || layout.maze[r-1][c] == State.DOOR){
+                    if(layout.maze[r+1][c] == State.WALL){
                         dz.renderObject(new Vector3f(16*r, 0, 16*c),
                                     doorNode, wallNode,
                                     assetManager,
