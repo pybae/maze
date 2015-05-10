@@ -55,15 +55,9 @@ public class DoorEntity implements MazeEntity {
         return height;
     }
 
-    public void renderObject(Vector3f loc, Node rootNode,
+    public void renderObject1(Vector3f loc, Node rootNode, Node wallNode,
                              AssetManager assetManager,
-                             PhysicsSpace physicsSpace) {
-    }
-
-    public void renderObject(Vector3f loc, Node rootNode, Node wallNode,
-                             AssetManager assetManager,
-                             PhysicsSpace physicsSpace,
-                             boolean orientation){
+                             PhysicsSpace physicsSpace){
         Box door = new Box(doorWidth, doorHeight, DOOR_LENGTH / 2);
         Geometry doorBox = new Geometry("Door", door);
         doorBox.setShadowMode(ShadowMode.CastAndReceive);
@@ -145,5 +139,112 @@ public class DoorEntity implements MazeEntity {
         physicsSpace.addAll(box3);
         doorBox.addControl(new RigidBodyControl(0));
         physicsSpace.addAll(doorBox);
+    }
+
+    public void renderObject2(Vector3f loc, Node rootNode, Node wallNode,
+                             AssetManager assetManager,
+                             PhysicsSpace physicsSpace){
+        Box door = new Box(DOOR_LENGTH / 2, doorHeight, doorWidth);
+        Geometry doorBox = new Geometry("Door", door);
+        doorBox.setShadowMode(ShadowMode.CastAndReceive);
+        TangentBinormalGenerator.generate(door);
+        doorBox.setLocalTranslation(new Vector3f(loc.x + 16/ 2,
+                                             loc.y + doorHeight,
+                                             loc.z + 2*width1 + doorWidth));
+        Material matDoor = new Material(assetManager,
+          "Common/MatDefs/Light/Lighting.j3md");
+
+        // This asset is a 3 by 2 texture (3000 x 2000) px
+        matDoor.setTexture("DiffuseMap",
+                     assetManager.loadTexture("Textures/Terrain/Door/door_d.png"));
+
+        matDoor.setTexture("NormalMap",
+                     assetManager.loadTexture("Textures/Terrain/Door/door_n.png"));
+
+        matDoor.setColor("Diffuse", ColorRGBA.White);
+        matDoor.setColor("Specular", ColorRGBA.White);
+        matDoor.setFloat("Shininess", 1f);
+        doorBox.setMaterial(matDoor);
+        rootNode.attachChild(doorBox);
+
+        Box b1 = new Box(DOOR_LENGTH / 2, height1, width1);
+        Box b2 = new Box(DOOR_LENGTH / 2, height2, width2);
+        Geometry box1 = new Geometry("Wall", b1);
+        Geometry box2 = new Geometry("Wall", b2);
+        Geometry box3 = new Geometry("Wall", b1);
+        box1.setShadowMode(ShadowMode.CastAndReceive);
+        box2.setShadowMode(ShadowMode.CastAndReceive);
+        box3.setShadowMode(ShadowMode.CastAndReceive);
+        TangentBinormalGenerator.generate(b1);
+        TangentBinormalGenerator.generate(b2);
+        box1.setLocalTranslation(new Vector3f(loc.x + 16/ 2,
+                                             loc.y + height1,
+                                             loc.z + width1));
+        box2.setLocalTranslation(new Vector3f(loc.x + 16/ 2,
+                                             loc.y + height - height2,
+                                             loc.z + width2));
+        box3.setLocalTranslation(new Vector3f(loc.x + 16/ 2,
+                                             loc.y + height1,
+                                             loc.z + width - width1));
+        Material mat = new Material(assetManager,
+           "Common/MatDefs/Light/Lighting.j3md");
+
+        // This asset is a 3 by 2 texture (3000 x 2000) px
+        Texture texture = assetManager.loadTexture("Textures/Terrain/Wall/moreBricks_d.jpg");
+        texture.setWrap(Texture.WrapMode.Repeat);
+
+        Texture bTexture = assetManager.loadTexture("Textures/Terrain/Wall/moreBricks_n.png");
+        bTexture.setWrap(Texture.WrapMode.Repeat);
+
+        box1.getMesh().scaleTextureCoordinates(new Vector2f((float) Math.ceil(width1 / 1000),
+                                                           (float) Math.ceil(height1 / 1000)));
+        box2.getMesh().scaleTextureCoordinates(new Vector2f((float) Math.ceil(width2 / 1000),
+                                                          (float) Math.ceil(height2 / 1000)));
+        box3.getMesh().scaleTextureCoordinates(new Vector2f((float) Math.ceil(width1 / 1000),
+                                                           (float) Math.ceil(height1/ 1000)));
+
+        mat.setTexture("DiffuseMap", texture);
+
+        mat.setTexture("NormalMap", bTexture);
+
+        mat.setColor("Diffuse", ColorRGBA.White);
+        mat.setColor("Specular", ColorRGBA.White);
+        mat.setFloat("Shininess", 1f);
+        box1.setMaterial(mat);
+        box2.setMaterial(mat);
+        box3.setMaterial(mat);
+        wallNode.attachChild(box1);
+        wallNode.attachChild(box2);
+        wallNode.attachChild(box3);
+
+        box1.addControl(new RigidBodyControl(0));
+        physicsSpace.addAll(box1);
+        box2.addControl(new RigidBodyControl(0));
+        physicsSpace.addAll(box2);
+        box3.addControl(new RigidBodyControl(0));
+        physicsSpace.addAll(box3);
+        doorBox.addControl(new RigidBodyControl(0));
+        physicsSpace.addAll(doorBox);
+    }
+
+    public void renderObject(Vector3f loc, Node rootNode,
+                             AssetManager assetManager,
+                             PhysicsSpace physicsSpace) {
+    }
+
+    public void renderObject(Vector3f loc, Node rootNode, Node wallNode,
+                             AssetManager assetManager,
+                             PhysicsSpace physicsSpace,
+                             boolean orientation){
+        if(orientation){
+            renderObject1(loc, rootNode, wallNode,
+                                      assetManager,
+                                      physicsSpace);
+        }
+        else{
+            renderObject2(loc, rootNode, wallNode,
+                                     assetManager,
+                                     physicsSpace);
+        }
     }
 }
