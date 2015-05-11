@@ -53,7 +53,7 @@ public class Golem {
         golem.setLocalScale(1.4f);
 
         CollisionShape shape = CollisionShapeFactory.createMeshShape(golem);
-        control = new RigidBodyControl(shape, 0.0f);
+        control = new RigidBodyControl(shape, 1.0f);
         control.setKinematic(true);
         physicsSpace.add(control);
         golem.addControl(control);
