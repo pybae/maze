@@ -18,6 +18,7 @@ public class HUD extends AbstractAppState implements ScreenController {
     private Application app;
     private Screen screen;
 
+    
     /** custom methods */
     public HUD() {
         /** You custom constructor, can accept arguments */

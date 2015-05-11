@@ -14,6 +14,8 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
@@ -47,7 +49,7 @@ public class Maze extends SimpleApplication implements ActionListener {
     private AudioNode audio_bg;
     private ArrayList<Golem> golems = new ArrayList<Golem>();
     Nifty nifty;
-
+    private HUD hud;
     // note that the width and height must be odd
     public static final int MAZE_WIDTH = 61;
     public static final int MAZE_HEIGHT = 61;
@@ -163,7 +165,8 @@ public class Maze extends SimpleApplication implements ActionListener {
         rootNode.attachChild(openNode);
         rootNode.attachChild(golemNode);
 
-
+        hud = new maze.HUD();
+        hud.initialize(null, this);
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
                 assetManager, inputManager, audioRenderer, guiViewPort);
         nifty = niftyDisplay.getNifty();
@@ -172,7 +175,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         nifty.loadStyleFile("nifty-default-styles.xml");
         nifty.loadControlFile("nifty-default-controls.xml");
         nifty.addScreen("start", new ScreenBuilder("start") {{
-        controller(new maze.HUD());
+        controller(hud);
         layer(new LayerBuilder("background"){{
             childLayoutCenter();
             backgroundColor("#000f");
@@ -182,6 +185,7 @@ public class Maze extends SimpleApplication implements ActionListener {
             //}});
         }});
 
+        
         layer(new LayerBuilder("foreground") {{
                 childLayoutVertical();
 
@@ -262,7 +266,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         }}.build(nifty));
 
         nifty.addScreen("hud", new ScreenBuilder("hud"){{
-            controller(new maze.HUD());
+            controller(hud);
         }}.build(nifty));
 
         nifty.gotoScreen("start");
@@ -354,6 +358,12 @@ public class Maze extends SimpleApplication implements ActionListener {
 
                     float dist = closest.getDistance();
                     if (dist < 10f) {
+                        Geometry door = closest.getGeometry();
+                        Quaternion current_rotation = door.getLocalRotation();
+                        current_rotation = current_rotation.fromAngleAxis(FastMath.PI / 2, new Vector3f(0, 1, 0));
+                        door.setLocalRotation(current_rotation);
+                        door.move(1, 1, 0);
+
                         System.out.println("Can perform an action.");
                     } else {
                         System.out.println("Too far.");
