@@ -47,6 +47,7 @@ public class Maze extends SimpleApplication implements ActionListener {
     private MazeGenerator generator;
     private MazeLayout layout;
     private AudioNode audio_bg;
+    private AudioNode audio_door;
     private ArrayList<Golem> golems = new ArrayList<Golem>();
     Nifty nifty;
     private HUD hud;
@@ -297,6 +298,13 @@ public class Maze extends SimpleApplication implements ActionListener {
         audio_bg.setVolume(.5f);
         rootNode.attachChild(audio_bg);
         audio_bg.play();
+        
+        audio_door = new AudioNode(assetManager, "Sound/door.wav", false);
+        audio_door.setPositional(false);
+        audio_door.setLooping(false);
+        audio_door.setVolume(1f);
+        rootNode.attachChild(audio_door);
+        
     }
 
     private void initPlayer() {
@@ -363,7 +371,7 @@ public class Maze extends SimpleApplication implements ActionListener {
                         current_rotation = current_rotation.fromAngleAxis(FastMath.PI / 2, new Vector3f(0, 1, 0));
                         door.setLocalRotation(current_rotation);
                         door.move(1, 1, 0);
-
+                        audio_door.play();
                         System.out.println("Can perform an action.");
                     } else {
                         System.out.println("Too far.");
