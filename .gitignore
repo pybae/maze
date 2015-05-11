@@ -1,8 +1,2 @@
-MANIFEST.MF
-build/
-build.xml
-*.dylib
-*.jnlp
-nbproject/
-*.class
-.DS_STORE
+/build/
+/dist/
