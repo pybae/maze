@@ -1,6 +1,7 @@
 package maze;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioNode;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -20,8 +21,11 @@ public class Golem {
 
     private Node golem;
     private RigidBodyControl control;
+    private AudioNode grumble;
+    private float elapsedTime;
 
     public static final float GOLEM_SPEED = 0.2f;
+    public static final float GRUMBLE_LOOP = 30;
 
     /**
      * The constructor for the golem class
@@ -35,7 +39,10 @@ public class Golem {
         this.physicsSpace = physicsSpace;
         this.room = room;
 
+        this.elapsedTime = (float) 0.0;
+
         initModel();
+        initSound();
     }
 
     /**
@@ -51,6 +58,17 @@ public class Golem {
         golem.addControl(control);
 
         rootNode.attachChild(golem);
+    }
+
+    /**
+     *
+     */
+    private void initSound() {
+        grumble = new AudioNode(assetManager, "Sound/zane_grumble.wav", false);
+        grumble.setPositional(false);
+        grumble.setLooping(false);
+        grumble.setVolume(2);
+        rootNode.attachChild(grumble);
     }
 
     /**
@@ -93,6 +111,25 @@ public class Golem {
                 setPosition(pos.getX(), pos.getZ());
             } else {
                 // do nothing
+            }
+        }
+
+        elapsedTime += tpf;
+        if(elapsedTime > GRUMBLE_LOOP) {
+            elapsedTime = (float) 0.0;
+
+            if(containsPlayer()) {
+                float dist = player.getPosition().distance(control.getPhysicsLocation());
+
+                if(dist < 20) {
+                    grumble.setVolume(3);
+                } else if(dist < 50) {
+                    grumble.setVolume(2);
+                } else if(dist < 100) {
+                    grumble.setVolume(1);
+                }
+
+                grumble.playInstance();
             }
         }
     }
