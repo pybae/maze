@@ -2,7 +2,7 @@
 
 The Maze is a first-person. horror game inspired by the likes of Slender and Amnesia. The player is equipped with nothing more than a flashlight to illuminate the entire maze in front of him. Monsters will chase him as he descends into the infinite labyrinth. Only with luck, skill, and cunning will he be able to escape.
 
-[Gameplay video](fill in link here)
+[Gameplay video](https://www.dropbox.com/s/3dwv3mdbm4wrl2a/akira_final_demo.avi?dl=0)
 
 ## Setup
 
