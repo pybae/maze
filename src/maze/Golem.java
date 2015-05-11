@@ -54,6 +54,7 @@ public class Golem {
 
         CollisionShape shape = CollisionShapeFactory.createMeshShape(golem);
         control = new RigidBodyControl(shape, 0.0f);
+        control.setKinematic(true);
         physicsSpace.add(control);
         golem.addControl(control);
 
@@ -76,6 +77,7 @@ public class Golem {
      */
     public void setPosition(float x, float z) {
         control.setPhysicsLocation(new Vector3f(x, 6, z));
+        golem.setLocalTranslation(new Vector3f(x, 6, z));
     }
 
     /**
