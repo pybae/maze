@@ -131,14 +131,29 @@ public class DoorEntity implements MazeEntity {
         wallNode.attachChild(box2);
         wallNode.attachChild(box3);
 
-        box1.addControl(new RigidBodyControl(0));
+        RigidBodyControl control = new RigidBodyControl(1);
+
+        box1.addControl(control);
         physicsSpace.addAll(box1);
-        box2.addControl(new RigidBodyControl(0));
+        control.setKinematic(true);
+
+        control = new RigidBodyControl(1);
+
+        box2.addControl(control);
         physicsSpace.addAll(box2);
-        box3.addControl(new RigidBodyControl(0));
+        control.setKinematic(true);
+
+        control = new RigidBodyControl(1);
+
+        box3.addControl(control);
         physicsSpace.addAll(box3);
-        doorBox.addControl(new RigidBodyControl(0));
+        control.setKinematic(true);
+
+        control = new RigidBodyControl(1);
+
+        doorBox.addControl(control);
         physicsSpace.addAll(doorBox);
+        control.setKinematic(true);
     }
 
     public void renderObject2(Vector3f loc, Node rootNode, Node wallNode,
@@ -217,14 +232,28 @@ public class DoorEntity implements MazeEntity {
         wallNode.attachChild(box2);
         wallNode.attachChild(box3);
 
-        box1.addControl(new RigidBodyControl(0));
+        RigidBodyControl control = new RigidBodyControl(1);
+        box1.addControl(control);
         physicsSpace.addAll(box1);
-        box2.addControl(new RigidBodyControl(0));
+        control.setKinematic(true);
+
+        control = new RigidBodyControl(1);
+
+        box2.addControl(control);
         physicsSpace.addAll(box2);
-        box3.addControl(new RigidBodyControl(0));
+        control.setKinematic(true);
+
+        control = new RigidBodyControl(1);
+
+        box3.addControl(control);
         physicsSpace.addAll(box3);
-        doorBox.addControl(new RigidBodyControl(0));
+        control.setKinematic(true);
+
+        control = new RigidBodyControl(1);
+
+        doorBox.addControl(control);
         physicsSpace.addAll(doorBox);
+        control.setKinematic(true);
     }
 
     public void renderObject(Vector3f loc, Node rootNode,
