@@ -52,8 +52,8 @@ public class Maze extends SimpleApplication implements ActionListener {
     Nifty nifty;
     private HUD hud;
     // note that the width and height must be odd
-    public static final int MAZE_WIDTH = 61;
-    public static final int MAZE_HEIGHT = 61;
+    public static final int MAZE_WIDTH = 21;
+    public static final int MAZE_HEIGHT = 21;
     public static final int MAZE_WINDINESS = 100;
     public static final int MIN_ROOM_SIZE = 1;
     public static final int MAX_ROOM_SIZE = 3;
@@ -131,6 +131,10 @@ public class Maze extends SimpleApplication implements ActionListener {
         int current_golems = 0;
         for (int i = 0; i < layout.rooms.size(); i++) {
             Rectangle room = layout.rooms.get(i);
+
+            if (room.contains(MAZE_WIDTH / 2, MAZE_HEIGHT /2 )) {
+                continue;
+            }
 
             if (current_golems < MAX_GOLEMS && rand.nextFloat() > GOLEM_CHANCE) {
                 current_golems++;
@@ -316,14 +320,6 @@ public class Maze extends SimpleApplication implements ActionListener {
         // for now, set the player spawn to the center of the maze
         player.setSpawn((MAZE_WIDTH / 2) * WALL_WIDTH,
                         (MAZE_HEIGHT / 2) * WALL_WIDTH);
-
-        CrateEntity crate = new CrateEntity();
-        crate.renderObject(new Vector3f((MAZE_WIDTH / 2) * WALL_WIDTH + 5,
-                                        0,
-                                        (MAZE_HEIGHT / 2) * WALL_WIDTH),
-                           rootNode,
-                           assetManager,
-                           getPhysicsSpace());
     }
 
     private void initCrossHair(){
