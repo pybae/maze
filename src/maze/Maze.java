@@ -295,7 +295,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         audio_bg = new AudioNode(assetManager, "Sound/bg.wav", false);
         audio_bg.setPositional(false);
         audio_bg.setLooping(true);
-        audio_bg.setVolume(.5f);
+        audio_bg.setVolume(0.0f);
         rootNode.attachChild(audio_bg);
         audio_bg.play();
 
@@ -304,7 +304,6 @@ public class Maze extends SimpleApplication implements ActionListener {
         audio_door.setLooping(false);
         audio_door.setVolume(1f);
         rootNode.attachChild(audio_door);
-
     }
 
     private void initPlayer() {
@@ -369,8 +368,9 @@ public class Maze extends SimpleApplication implements ActionListener {
                         Geometry door = closest.getGeometry();
                         Quaternion current_rotation = door.getLocalRotation();
                         current_rotation = current_rotation.fromAngleAxis(FastMath.PI / 2, new Vector3f(0, 1, 0));
+
                         door.setLocalRotation(current_rotation);
-                        door.move(1, 1, 0);
+                        door.move(4, 0, 4);
                         audio_door.play();
                         System.out.println("Can perform an action.");
                     } else {
