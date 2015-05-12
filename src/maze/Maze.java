@@ -360,24 +360,34 @@ public class Maze extends SimpleApplication implements ActionListener {
                 if (results.size() > 0) {
                     CollisionResult closest = results.getClosestCollision();
 
-                    String hit = closest.getGeometry().getName();
-                    System.out.println("Pointer picked " + hit + ".");
-
                     float dist = closest.getDistance();
                     if (dist < 10f) {
                         Geometry door = closest.getGeometry();
-                        Quaternion current_rotation = door.getLocalRotation();
-                        current_rotation = current_rotation.fromAngleAxis(FastMath.PI / 2, new Vector3f(0, 1, 0));
 
-                        door.setLocalRotation(current_rotation);
-                        door.move(4, 0, 4);
+                        if (door.getName().equals("Door")) {
+                            Quaternion current_rotation = door.getLocalRotation();
+                            current_rotation = current_rotation.fromAngleAxis(FastMath.PI / 2, new Vector3f(0, 1, 0));
+
+                            door.setLocalRotation(current_rotation);
+                            door.move(4, 0, 4);
+
+                            door.setName("OpenDoor");
+                        } else {
+                            Quaternion current_rotation = door.getLocalRotation();
+                            current_rotation = current_rotation.fromAngleAxis(0, new Vector3f(0, 1, 0));
+
+                            door.setLocalRotation(current_rotation);
+                            door.move(-4, 0, -4);
+
+                            door.setName("Door");
+                        }
+
                         audio_door.play();
-                        System.out.println("Can perform an action.");
                     } else {
-                        System.out.println("Too far.");
+                        // do nothing
                     }
                 } else {
-                    System.out.println("Nothing.");
+                    // do nothing
                 }
             }
         }
