@@ -295,7 +295,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         audio_bg = new AudioNode(assetManager, "Sound/bg.wav", false);
         audio_bg.setPositional(false);
         audio_bg.setLooping(true);
-        audio_bg.setVolume(0.0f);
+        audio_bg.setVolume(0.5f);
         rootNode.attachChild(audio_bg);
         audio_bg.play();
 
@@ -316,6 +316,14 @@ public class Maze extends SimpleApplication implements ActionListener {
         // for now, set the player spawn to the center of the maze
         player.setSpawn((MAZE_WIDTH / 2) * WALL_WIDTH,
                         (MAZE_HEIGHT / 2) * WALL_WIDTH);
+
+        CrateEntity crate = new CrateEntity();
+        crate.renderObject(new Vector3f((MAZE_WIDTH / 2) * WALL_WIDTH + 5,
+                                        0,
+                                        (MAZE_HEIGHT / 2) * WALL_WIDTH),
+                           rootNode,
+                           assetManager,
+                           getPhysicsSpace());
     }
 
     private void initCrossHair(){
