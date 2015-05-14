@@ -51,6 +51,9 @@ public class Maze extends SimpleApplication implements ActionListener {
     private ArrayList<Golem> golems = new ArrayList<Golem>();
     Nifty nifty;
     private HUD hud;
+    private Rectangle endRoom;
+
+
     // note that the width and height must be odd
     public static final int MAZE_WIDTH = 21;
     public static final int MAZE_HEIGHT = 21;
@@ -147,6 +150,8 @@ public class Maze extends SimpleApplication implements ActionListener {
                 golems.add(golem);
             }
         }
+
+        endRoom = layout.rooms.get(layout.rooms.size() - 1);
     }
 
     /**
@@ -175,6 +180,7 @@ public class Maze extends SimpleApplication implements ActionListener {
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(
                 assetManager, inputManager, audioRenderer, guiViewPort);
         nifty = niftyDisplay.getNifty();
+
         //flyCam.setDragToRotate(true);
         guiViewPort.addProcessor(niftyDisplay);
         nifty.loadStyleFile("nifty-default-styles.xml");
@@ -203,7 +209,7 @@ public class Maze extends SimpleApplication implements ActionListener {
 
                 // add text
                 text(new TextBuilder() {{
-                    text("Sp00ky Maze");
+                    text("The Maze");
                     font("Interface/Fonts/Default.fnt");
                     height("100%");
                     width("100%");
@@ -289,6 +295,13 @@ public class Maze extends SimpleApplication implements ActionListener {
 
     @Override
     public void simpleUpdate(float tpf) {
+        Vector3f player_pos = player.getPosition();
+
+        if (endRoom.contains(player_pos.getZ() / Maze.WALL_WIDTH,
+                             player_pos.getX() / Maze.WALL_WIDTH)) {
+            stop();
+        }
+
         player.update(tpf);
         for (Golem golem : golems) {
             golem.update(tpf);

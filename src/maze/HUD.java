@@ -18,16 +18,15 @@ public class HUD extends AbstractAppState implements ScreenController {
     private Application app;
     private Screen screen;
 
-    
+
     /** custom methods */
     public HUD() {
         /** You custom constructor, can accept arguments */
     }
 
     public void startGame(String nextScreen) {
-
         nifty.gotoScreen(nextScreen);
-            // switch to another screen
+        // switch to another screen
     }
 
     public void quitGame() {
