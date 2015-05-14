@@ -10,6 +10,7 @@ import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import de.lessvoid.nifty.Nifty;
 import java.awt.Rectangle;
 
 public class Golem {
@@ -18,6 +19,7 @@ public class Golem {
     private Player player;
     private PhysicsSpace physicsSpace;
     private Rectangle room;
+    private Nifty nifty;
 
     private Node golem;
     private RigidBodyControl control;
@@ -31,13 +33,14 @@ public class Golem {
      * The constructor for the golem class
      * this takes in the current player to use for viewport and position
      */
-    public Golem(Node rootNode, AssetManager assetManager, Player player, PhysicsSpace physicsSpace, Rectangle room) {
+    public Golem(Node rootNode, AssetManager assetManager, Player player, PhysicsSpace physicsSpace, Rectangle room, Nifty nifty) {
 
         this.rootNode = rootNode;
         this.assetManager = assetManager;
         this.player = player;
         this.physicsSpace = physicsSpace;
         this.room = room;
+        this.nifty = nifty;
 
         this.elapsedTime = (float) 0.0;
 
@@ -98,11 +101,17 @@ public class Golem {
         if (containsPlayer()) {
             BoundingVolume bv = golem.getWorldBound();
 
+            Vector3f player_pos = player.getPosition();
+            Vector3f pos = control.getPhysicsLocation();
+
+            float distance = pos.subtract(player_pos).length();
+
+            if (distance < 6.5f) {
+                nifty.gotoScreen("end");
+            }
+
             if (!player.isLooking(bv)) {
                 Quaternion orientation = control.getPhysicsRotation();
-                Vector3f player_pos = player.getPosition();
-                Vector3f pos = control.getPhysicsLocation();
-
                 Vector3f direction = player_pos.subtract(pos).normalize();
 
                 direction.setY(0);
@@ -120,19 +129,17 @@ public class Golem {
         if(elapsedTime > GRUMBLE_LOOP) {
             elapsedTime = (float) 0.0;
 
-            if(containsPlayer()) {
-                float dist = player.getPosition().distance(control.getPhysicsLocation());
+            float dist = player.getPosition().distance(control.getPhysicsLocation());
 
-                if(dist < 20) {
-                    grumble.setVolume(3);
-                } else if(dist < 50) {
-                    grumble.setVolume(2);
-                } else if(dist < 100) {
-                    grumble.setVolume(1);
-                }
-
-                grumble.playInstance();
+            if(dist < 20) {
+                grumble.setVolume(3);
+            } else if(dist < 50) {
+                grumble.setVolume(2);
+            } else if(dist < 100) {
+                grumble.setVolume(1);
             }
+
+            grumble.playInstance();
         }
     }
 }

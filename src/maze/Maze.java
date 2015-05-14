@@ -13,6 +13,7 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
+import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -55,8 +56,8 @@ public class Maze extends SimpleApplication implements ActionListener {
 
 
     // note that the width and height must be odd
-    public static final int MAZE_WIDTH = 21;
-    public static final int MAZE_HEIGHT = 21;
+    public static final int MAZE_WIDTH = 25;
+    public static final int MAZE_HEIGHT = 25;
     public static final int MAZE_WINDINESS = 100;
     public static final int MIN_ROOM_SIZE = 1;
     public static final int MAX_ROOM_SIZE = 3;
@@ -67,7 +68,7 @@ public class Maze extends SimpleApplication implements ActionListener {
 
     public static final int MAX_GOLEMS = 7;
     public static final int WALL_WIDTH = 16;
-    public static final float GOLEM_CHANCE = 0.2f;
+    public static final float GOLEM_CHANCE = 0.4f;
 
     public static final float RENDER_DISTANCE = 50.0f;
 
@@ -142,7 +143,7 @@ public class Maze extends SimpleApplication implements ActionListener {
             if (current_golems < MAX_GOLEMS && rand.nextFloat() > GOLEM_CHANCE) {
                 current_golems++;
 
-                Golem golem = new Golem(golemNode, assetManager, player, getPhysicsSpace(), room);
+                Golem golem = new Golem(golemNode, assetManager, player, getPhysicsSpace(), room, nifty);
                 int x = (room.y + rand.nextInt(room.height)) * WALL_WIDTH;
                 int z = (room.x + rand.nextInt(room.width)) * WALL_WIDTH;
                 golem.setPosition(x, z);
@@ -152,6 +153,14 @@ public class Maze extends SimpleApplication implements ActionListener {
         }
 
         endRoom = layout.rooms.get(layout.rooms.size() - 1);
+        PointLight lamp_light = new PointLight();
+        lamp_light.setColor(ColorRGBA.Yellow);
+        lamp_light.setRadius(4f);
+        lamp_light.setPosition(new Vector3f((endRoom.y + rand.nextInt(endRoom.height)) * WALL_WIDTH,
+                                            6,
+                                            (endRoom.x + rand.nextInt(endRoom.width)) * WALL_WIDTH));
+
+        rootNode.addLight(lamp_light);
     }
 
     /**
@@ -276,6 +285,189 @@ public class Maze extends SimpleApplication implements ActionListener {
 
         }}.build(nifty));
 
+        nifty.addScreen("end", new ScreenBuilder("end") {{
+        controller(hud);
+        layer(new LayerBuilder("background"){{
+            childLayoutCenter();
+            backgroundColor("#000f");
+            // add image
+            //image(new ImageBuilder() {{
+              //  filename("Textures/HUD/start.jpg");
+            //}});
+        }});
+
+
+        layer(new LayerBuilder("foreground") {{
+                childLayoutVertical();
+
+            // panel added
+           panel(new PanelBuilder("panel_top") {{
+                childLayoutCenter();
+                alignCenter();
+                height("25%");
+                width("75%");
+
+                // add text
+                text(new TextBuilder() {{
+                    text("The Maze");
+                    font("Interface/Fonts/Default.fnt");
+                    height("100%");
+                    width("100%");
+                }});
+           }});
+
+           panel(new PanelBuilder("panel_mid") {{
+                childLayoutCenter();
+                alignCenter();
+                height("50%");
+                width("75%");
+                // add text
+
+                text(new TextBuilder() {{
+                    text("YOU DIED");
+                    font("Interface/Fonts/Default.fnt");
+                    wrap(true);
+                    height("100%");
+                    width("100%");
+                }});
+            }});
+
+            panel(new PanelBuilder("panel_bottom") {{
+                childLayoutHorizontal();
+                alignCenter();
+                height("25%");
+                width("75%");
+
+                panel(new PanelBuilder("panel_bottom_left") {{
+                    childLayoutCenter();
+                    valignCenter();
+                    height("50%");
+                    width("50%");
+
+                    // add control
+                    control(new ButtonBuilder("StartButton", "Start") {{
+                        alignCenter();
+                        valignCenter();
+                        height("50%");
+                        width("50%");
+                        visibleToMouse(true);
+                        interactOnClick("startGame(hud)");
+                    }});
+                }});
+
+                panel(new PanelBuilder("panel_bottom_right") {{
+                    childLayoutCenter();
+                    valignCenter();
+                    height("50%");
+                    width("50%");
+
+                    // add control
+                    control(new ButtonBuilder("QuitButton", "Quit") {{
+                        alignCenter();
+                        valignCenter();
+                        height("50%");
+                        width("50%");
+                        visibleToMouse(true);
+                        interactOnClick("quitGame()");
+                    }});
+                }});
+            }}); // panel added
+        }});
+
+        }}.build(nifty));
+
+
+        nifty.addScreen("success", new ScreenBuilder("success") {{
+        controller(hud);
+        layer(new LayerBuilder("background"){{
+            childLayoutCenter();
+            backgroundColor("#000f");
+            // add image
+            //image(new ImageBuilder() {{
+              //  filename("Textures/HUD/start.jpg");
+            //}});
+        }});
+
+
+        layer(new LayerBuilder("foreground") {{
+                childLayoutVertical();
+
+            // panel added
+           panel(new PanelBuilder("panel_top") {{
+                childLayoutCenter();
+                alignCenter();
+                height("25%");
+                width("75%");
+
+                // add text
+                text(new TextBuilder() {{
+                    text("The Maze");
+                    font("Interface/Fonts/Default.fnt");
+                    height("100%");
+                    width("100%");
+                }});
+           }});
+
+           panel(new PanelBuilder("panel_mid") {{
+                childLayoutCenter();
+                alignCenter();
+                height("50%");
+                width("75%");
+                // add text
+
+                text(new TextBuilder() {{
+                    text("YOU WON");
+                    font("Interface/Fonts/Default.fnt");
+                    wrap(true);
+                    height("100%");
+                    width("100%");
+                }});
+            }});
+
+            panel(new PanelBuilder("panel_bottom") {{
+                childLayoutHorizontal();
+                alignCenter();
+                height("25%");
+                width("75%");
+
+                panel(new PanelBuilder("panel_bottom_left") {{
+                    childLayoutCenter();
+                    valignCenter();
+                    height("50%");
+                    width("50%");
+
+                    // add control
+                    control(new ButtonBuilder("StartButton", "Start") {{
+                        alignCenter();
+                        valignCenter();
+                        height("50%");
+                        width("50%");
+                        visibleToMouse(true);
+                        interactOnClick("startGame(hud)");
+                    }});
+                }});
+
+                panel(new PanelBuilder("panel_bottom_right") {{
+                    childLayoutCenter();
+                    valignCenter();
+                    height("50%");
+                    width("50%");
+
+                    // add control
+                    control(new ButtonBuilder("QuitButton", "Quit") {{
+                        alignCenter();
+                        valignCenter();
+                        height("50%");
+                        width("50%");
+                        visibleToMouse(true);
+                        interactOnClick("quitGame()");
+                    }});
+                }});
+            }}); // panel added
+        }});
+
+        }}.build(nifty));
+
         nifty.addScreen("hud", new ScreenBuilder("hud"){{
             controller(hud);
         }}.build(nifty));
@@ -299,7 +491,7 @@ public class Maze extends SimpleApplication implements ActionListener {
 
         if (endRoom.contains(player_pos.getZ() / Maze.WALL_WIDTH,
                              player_pos.getX() / Maze.WALL_WIDTH)) {
-            stop();
+            nifty.gotoScreen("success");
         }
 
         player.update(tpf);
